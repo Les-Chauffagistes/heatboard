@@ -2,12 +2,12 @@ import { AllCommunityModule, ColDef, ModuleRegistry, RowClickedEvent, ValueForma
 import { AgGridReact, CustomCellRendererProps } from 'ag-grid-react';
 import { Worker } from '../../../../../../models/Worker';
 import { useEffect, useMemo, useState } from 'react';
-import UnitConverter from '../../../../../../lib/UnitConverter';
+import UnitConverter from '../../../../../lib/UnitConverter';
 import { AG_GRID_LOCALE_FR } from "../../../../../../locale/fr-FR";
 import NameCell from './NameCell';
 import { CleanWorkerHashrate } from '../../../../../../models/CleanWorkerHashrate';
 import { HeaderWithInfo } from './HeaderInfo';
-import formatNumber from '../../../../../../lib/NumberFormatter';
+import formatNumber from '../../../../../lib/NumberFormatter';
 
 
 ModuleRegistry.registerModules([AllCommunityModule]);

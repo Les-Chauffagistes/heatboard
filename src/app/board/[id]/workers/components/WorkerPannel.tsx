@@ -1,4 +1,4 @@
-import ExtractWorkername from "../../../../../../lib/ExtractWorkername";
+import ExtractWorkername from "../../../../../lib/ExtractWorkername";
 import { Worker } from "../../../../../../models/Worker";
 import HashreateLine from "./HashrateLine";
 import { useWorkerStats } from "@/app/hooks/useWorkerStats";

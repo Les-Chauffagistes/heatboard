@@ -6,13 +6,13 @@ export const metadata: Metadata = {
   description: "Statistiques détaillées des machines de minage",
   openGraph: {
     "images": [
-      `${process.env.NEXT_PUBLIC_BASE_URL}/banner.png`
+      `${process.env.BASE_URL}/banner.png`
     ]
   },
   twitter: {
     "card": "summary_large_image",
     "images": [
-      `${process.env.NEXT_PUBLIC_BASE_URL}/banner.png`
+      `${process.env.BASE_URL}/banner.png`
     ]
   }
 };

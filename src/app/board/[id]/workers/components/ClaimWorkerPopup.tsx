@@ -1,7 +1,7 @@
 "use client";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Worker } from "../../../../../../models/Worker";
-import ExtractWorkername from "../../../../../../lib/ExtractWorkername";
+import ExtractWorkername from "../../../../../lib/ExtractWorkername";
 
 
 

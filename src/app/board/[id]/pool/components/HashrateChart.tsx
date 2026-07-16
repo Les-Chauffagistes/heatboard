@@ -5,7 +5,7 @@ import { AxisValueFormatterContext } from "@mui/x-charts";
 import Typography from '@mui/material/Typography';
 
 import { PoolHistoryRecord } from "../../../../../../models/API Payloads/PoolHistoryRecord";
-import UnitConverter from "../../../../../../lib/UnitConverter";
+import UnitConverter from "../../../../../lib/UnitConverter";
 
 
 export default function HashrateChart({

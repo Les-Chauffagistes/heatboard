@@ -1,4 +1,4 @@
-import ExtractWorkername from "../../../../../../lib/ExtractWorkername";
+import ExtractWorkername from "../../../../../lib/ExtractWorkername";
 import * as Dialog from '@radix-ui/react-dialog';
 import HashreateLine from "./HashrateLine";
 import { useWorkerStats } from "@/app/hooks/useWorkerStats";

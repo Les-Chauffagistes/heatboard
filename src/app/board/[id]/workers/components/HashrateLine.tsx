@@ -1,6 +1,6 @@
 import { AxisValueFormatterContext, LineChart, LineSeries, YAxis } from "@mui/x-charts";
 import { WorkerHistoryRecord } from "../../../../../../models/API Payloads/WorkerHistoryRecord";
-import UnitConverter from "../../../../../../lib/UnitConverter";
+import UnitConverter from "../../../../../lib/UnitConverter";
 import { frFRLocalText } from '@mui/x-charts/locales';
 
 export default function HashreateLine({ history, showHashrate1h, showWeight }: { history: WorkerHistoryRecord[], showHashrate1h: boolean, showWeight: boolean }) {

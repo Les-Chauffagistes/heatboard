@@ -12,12 +12,13 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@les-chauffagistes/authentication-types": "^0.0.6",
     "@mui/x-charts": "^8.14.1",
     "@noble/curves": "^2.0.1",
     "@noble/hashes": "^2.0.1",
     "@noble/secp256k1": "^3.0.0",
-    "@prisma/adapter-pg": "^6.19.0",
-    "@prisma/client": "^6.19.0",
+    "@prisma/adapter-pg": "^6.19.3",
+    "@prisma/client": "^6.19.3",
     "@radix-ui/react-dialog": "^1.1.15",
     "@scure/base": "^2.0.0",
     "@simplewebauthn/browser": "^13.2.2",
@@ -26,14 +27,14 @@
     "ag-grid-react": "^34.2.0",
     "bcrypt": "^6.0.0",
     "bech32": "^2.0.0",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.4.2",
     "elliptic": "^6.6.1",
     "framer-motion": "^12.23.24",
     "iron-session": "^8.0.4",
     "lucide-react": "^0.544.0",
     "next": "^15.5.7",
     "next-ws": "^2.1.7",
-    "pg": "^8.16.3",
+    "pg": "^8.22.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-qr-code": "^2.0.18",
@@ -55,5 +56,13 @@
     "eslint-config-next": "15.5.4",
     "prisma": "^6.19.0",
     "typescript": "^5"
+  },
+  "allowScripts": {
+    "@prisma/client@6.19.3": true,
+    "@prisma/engines@6.19.0": true,
+    "bcrypt@6.0.0": true,
+    "prisma@6.19.0": true,
+    "sharp@0.34.5": true,
+    "unrs-resolver@1.11.1": true
   }
 }

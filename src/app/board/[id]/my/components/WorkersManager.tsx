@@ -2,10 +2,15 @@
 
 import { LinkedWorkers } from "../../../../../../models/API Payloads/LinkedWorkers";
 import Link from "next/link";
-import { usersModel } from "../../../../../../generated/prisma/models";
+import { SessionUser } from "@/app/hooks/useSession";
 import { Computer, Wallet } from "lucide-react";
 
-export default function WorkerManager({ user, linkedWorkers, address, setOpen }: { user: usersModel, linkedWorkers: LinkedWorkers[], address: string, setOpen: (open: boolean) => void }) {
+export default function WorkerManager({ user, linkedWorkers, address, setOpen }: Readonly<{
+    user: SessionUser,
+    linkedWorkers: LinkedWorkers[],
+    address: string,
+    setOpen: (open: boolean) => void
+}>) {
 
     if (!user.pseudo) return null;
 

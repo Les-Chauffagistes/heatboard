@@ -8,10 +8,6 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/lnurl_auth'
+export type * from './models/user'
 export type * from './models/workernames'
-export type * from './models/discord_users'
-export type * from './models/ln_users'
-export type * from './models/password_users'
-export type * from './models/users'
 export type * from './commonInputTypes'

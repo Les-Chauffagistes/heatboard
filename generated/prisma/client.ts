@@ -29,8 +29,8 @@ export * from "./enums"
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Lnurl_auths
- * const lnurl_auths = await prisma.lnurl_auth.findMany()
+ * // Fetch zero or more Users
+ * const users = await prisma.user.findMany()
  * ```
  * 
  * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
@@ -49,32 +49,12 @@ path.join(__dirname, "libquery_engine-darwin.dylib.node")
 path.join(process.cwd(), "generated/prisma/libquery_engine-darwin.dylib.node")
 
 /**
- * Model lnurl_auth
+ * Model user
  * 
  */
-export type lnurl_auth = Prisma.lnurl_authModel
+export type user = Prisma.userModel
 /**
  * Model workernames
  * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
  */
 export type workernames = Prisma.workernamesModel
-/**
- * Model discord_users
- * 
- */
-export type discord_users = Prisma.discord_usersModel
-/**
- * Model ln_users
- * 
- */
-export type ln_users = Prisma.ln_usersModel
-/**
- * Model password_users
- * 
- */
-export type password_users = Prisma.password_usersModel
-/**
- * Model users
- * 
- */
-export type users = Prisma.usersModel

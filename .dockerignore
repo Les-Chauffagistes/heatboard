@@ -20,4 +20,3 @@ npm-debug.log*
 yarn-debug.log*
 dockerfile
 .dockerignore
-prisma/migrations

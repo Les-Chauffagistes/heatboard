@@ -1,0 +1,6 @@
+window.__CONFIG__ = {
+  BASE_URL: "http://localhost:3002",
+  API_URL: "https://chauffagistes-pool.fr:3000",
+  HISTORY_API_URL: "https://history.staging.chauffagistes-btc.fr",
+  BITCOIN_API_URL: "https://bitcoin.staging.chauffagistes-btc.fr"
+};

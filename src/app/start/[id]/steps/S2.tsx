@@ -1,45 +1,61 @@
-import { useRef } from "react"
+import { LinkedWorkers } from "../../../../../models/API Payloads/LinkedWorkers";
 import Step from "../components/Step";
 
 
 
-export default function S2({ next }: { next: (psuedo: string) => Promise<boolean> }) {
-    const inputRef = useRef<HTMLInputElement>(null);
+export default function S2({ association, token, next }: { association: LinkedWorkers | undefined, token: string, next: () => void }) {
+    if (!association) return null;
+    const ws = new WebSocket(`../api/${association.btc_address}/workernames/${association.workername}/ws?token=` + token);
+    ws.onmessage = (event) => {
+        console.log(event.data);
+        const payload = JSON.parse(event.data);
+        if (payload.ready) {
+            next();
+        }
+    }
+
+    ws.onopen = () => {
+        console.log('waiting for pool payload');
+    }
+
+    ws.onclose = () => {
+        console.log('disconnected');
+    }
+
+    ws.onerror = (event) => {
+        console.log('error', event);
+    }
+
     return (
+
         <div style={{
-            display: "flex",
-            flexDirection: "column",
             height: "100%"
         }}>
-            <Step number={2} title="Ajouter un pseudo" />
-            <div>
-                <p>Votre pseudo sera votre seule identité chez Les Chauffagistes</p>
-                <p>Ce pseudo n&apos;a pas besoin d&apos;être unique, et n&apos;a pas de lien avec votre workername (le nom de votre mineur)</p>
-            </div>
-            <div style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flex: 1,
-                flexDirection: "column",
+            <Step number={2} title="Configurer un mineur" />
+            <p>Vous avez réservé le workername {association.workername}.</p>
+            <p>C&apos;est le moment de vous connecter à la pool ! Utilisez les informations suivantes sur votre mineur pour l&apos;associer à votre compte Chauffagiste.</p>
+            <h3 style={{ marginTop: 20 }}>URL stratum</h3>
+            <p>stratum+tcp://chauffagistes-pool.fr:3333</p>
 
-            }}>
-                <input ref={inputRef} type="text" style={{
-                    padding: "10px 15px",
+            <h3 style={{ marginTop: 20 }}>User</h3>
+            <p style={{
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+                maxWidth: "100%"
+            }}>{association.btc_address}.{association.workername}</p>
+
+
+            <h3 style={{ marginTop: 20 }}>Password</h3>
+            <p>{association.code}</p>
+
+
+            <div style={{ position: "absolute", bottom: 0, width: "100%", left: 0 }}>
+                <p style={{
                     textAlign: "center",
-                    fontSize: "1rem",
-                    borderRadius: 10,
-                    margin: "auto",
-                    display: "flex",
-                    alignSelf: "center",
-                }} />
-                <button onClick={async () => {
-                    const result = await next(inputRef.current?.value ?? "")
-                    if (!result) {
-                        alert("Vous ne pouvez pas utiliser un pseudo vide")
-                    }
-                }} className="primary">Continuer</button>
+                }}>Lorsque votre premier mineur sera connecté avec ces paramètres, vous pourrez automatiquement passer à la dernière étape.</p>
             </div>
         </div>
-    )
+
+
+    );
 }

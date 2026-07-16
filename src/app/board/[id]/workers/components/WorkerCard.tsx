@@ -1,6 +1,6 @@
-import ExtractWorkername from "../../../../../../lib/ExtractWorkername";
-import UnitConverter from "../../../../../../lib/UnitConverter";
-import formatNumber from "../../../../../../lib/NumberFormatter";
+import ExtractWorkername from "../../../../../lib/ExtractWorkername";
+import UnitConverter from "../../../../../lib/UnitConverter";
+import formatNumber from "../../../../../lib/NumberFormatter";
 
 import "./hashrateBar.css"
 import "./workerCard.css"

@@ -28,5 +28,5 @@ export function decrypt(token: string) {
 }
 
 export async function resolveUser(id: string | number) {
-    return await prisma.users.findUnique({where: {id: typeof id === "string" ? Number.parseInt(id) : id}})
+    return await prisma.user.findUnique({where: {id: id.toString()}})
 }

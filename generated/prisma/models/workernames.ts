@@ -20,23 +20,13 @@ export type workernamesModel = runtime.Types.Result.DefaultSelection<Prisma.$wor
 
 export type AggregateWorkernames = {
   _count: WorkernamesCountAggregateOutputType | null
-  _avg: WorkernamesAvgAggregateOutputType | null
-  _sum: WorkernamesSumAggregateOutputType | null
   _min: WorkernamesMinAggregateOutputType | null
   _max: WorkernamesMaxAggregateOutputType | null
 }
 
-export type WorkernamesAvgAggregateOutputType = {
-  user: number | null
-}
-
-export type WorkernamesSumAggregateOutputType = {
-  user: bigint | null
-}
-
 export type WorkernamesMinAggregateOutputType = {
   workername: string | null
-  user: bigint | null
+  user: string | null
   status: string | null
   created_at: Date | null
   btc_address: string | null
@@ -45,7 +35,7 @@ export type WorkernamesMinAggregateOutputType = {
 
 export type WorkernamesMaxAggregateOutputType = {
   workername: string | null
-  user: bigint | null
+  user: string | null
   status: string | null
   created_at: Date | null
   btc_address: string | null
@@ -62,14 +52,6 @@ export type WorkernamesCountAggregateOutputType = {
   _all: number
 }
 
-
-export type WorkernamesAvgAggregateInputType = {
-  user?: true
-}
-
-export type WorkernamesSumAggregateInputType = {
-  user?: true
-}
 
 export type WorkernamesMinAggregateInputType = {
   workername?: true
@@ -137,18 +119,6 @@ export type WorkernamesAggregateArgs<ExtArgs extends runtime.Types.Extensions.In
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: WorkernamesAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: WorkernamesSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: WorkernamesMinAggregateInputType
@@ -179,22 +149,18 @@ export type workernamesGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   _count?: WorkernamesCountAggregateInputType | true
-  _avg?: WorkernamesAvgAggregateInputType
-  _sum?: WorkernamesSumAggregateInputType
   _min?: WorkernamesMinAggregateInputType
   _max?: WorkernamesMaxAggregateInputType
 }
 
 export type WorkernamesGroupByOutputType = {
   workername: string
-  user: bigint
+  user: string
   status: string
   created_at: Date
   btc_address: string
   code: string
   _count: WorkernamesCountAggregateOutputType | null
-  _avg: WorkernamesAvgAggregateOutputType | null
-  _sum: WorkernamesSumAggregateOutputType | null
   _min: WorkernamesMinAggregateOutputType | null
   _max: WorkernamesMaxAggregateOutputType | null
 }
@@ -219,12 +185,11 @@ export type workernamesWhereInput = {
   OR?: Prisma.workernamesWhereInput[]
   NOT?: Prisma.workernamesWhereInput | Prisma.workernamesWhereInput[]
   workername?: Prisma.StringFilter<"workernames"> | string
-  user?: Prisma.BigIntFilter<"workernames"> | bigint | number
+  user?: Prisma.StringFilter<"workernames"> | string
   status?: Prisma.StringFilter<"workernames"> | string
   created_at?: Prisma.DateTimeFilter<"workernames"> | Date | string
   btc_address?: Prisma.StringFilter<"workernames"> | string
   code?: Prisma.StringFilter<"workernames"> | string
-  users?: Prisma.XOR<Prisma.UsersScalarRelationFilter, Prisma.usersWhereInput>
 }
 
 export type workernamesOrderByWithRelationInput = {
@@ -234,7 +199,6 @@ export type workernamesOrderByWithRelationInput = {
   created_at?: Prisma.SortOrder
   btc_address?: Prisma.SortOrder
   code?: Prisma.SortOrder
-  users?: Prisma.usersOrderByWithRelationInput
 }
 
 export type workernamesWhereUniqueInput = Prisma.AtLeast<{
@@ -243,12 +207,11 @@ export type workernamesWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.workernamesWhereInput[]
   NOT?: Prisma.workernamesWhereInput | Prisma.workernamesWhereInput[]
   workername?: Prisma.StringFilter<"workernames"> | string
-  user?: Prisma.BigIntFilter<"workernames"> | bigint | number
+  user?: Prisma.StringFilter<"workernames"> | string
   status?: Prisma.StringFilter<"workernames"> | string
   created_at?: Prisma.DateTimeFilter<"workernames"> | Date | string
   btc_address?: Prisma.StringFilter<"workernames"> | string
   code?: Prisma.StringFilter<"workernames"> | string
-  users?: Prisma.XOR<Prisma.UsersScalarRelationFilter, Prisma.usersWhereInput>
 }, "workername_user_btc_address">
 
 export type workernamesOrderByWithAggregationInput = {
@@ -259,10 +222,8 @@ export type workernamesOrderByWithAggregationInput = {
   btc_address?: Prisma.SortOrder
   code?: Prisma.SortOrder
   _count?: Prisma.workernamesCountOrderByAggregateInput
-  _avg?: Prisma.workernamesAvgOrderByAggregateInput
   _max?: Prisma.workernamesMaxOrderByAggregateInput
   _min?: Prisma.workernamesMinOrderByAggregateInput
-  _sum?: Prisma.workernamesSumOrderByAggregateInput
 }
 
 export type workernamesScalarWhereWithAggregatesInput = {
@@ -270,7 +231,7 @@ export type workernamesScalarWhereWithAggregatesInput = {
   OR?: Prisma.workernamesScalarWhereWithAggregatesInput[]
   NOT?: Prisma.workernamesScalarWhereWithAggregatesInput | Prisma.workernamesScalarWhereWithAggregatesInput[]
   workername?: Prisma.StringWithAggregatesFilter<"workernames"> | string
-  user?: Prisma.BigIntWithAggregatesFilter<"workernames"> | bigint | number
+  user?: Prisma.StringWithAggregatesFilter<"workernames"> | string
   status?: Prisma.StringWithAggregatesFilter<"workernames"> | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"workernames"> | Date | string
   btc_address?: Prisma.StringWithAggregatesFilter<"workernames"> | string
@@ -279,16 +240,16 @@ export type workernamesScalarWhereWithAggregatesInput = {
 
 export type workernamesCreateInput = {
   workername: string
+  user: string
   status?: string
   created_at?: Date | string
   btc_address: string
   code: string
-  users: Prisma.usersCreateNestedOneWithoutWorkernamesInput
 }
 
 export type workernamesUncheckedCreateInput = {
   workername: string
-  user: bigint | number
+  user: string
   status?: string
   created_at?: Date | string
   btc_address: string
@@ -297,16 +258,16 @@ export type workernamesUncheckedCreateInput = {
 
 export type workernamesUpdateInput = {
   workername?: Prisma.StringFieldUpdateOperationsInput | string
+  user?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   btc_address?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
-  users?: Prisma.usersUpdateOneRequiredWithoutWorkernamesNestedInput
 }
 
 export type workernamesUncheckedUpdateInput = {
   workername?: Prisma.StringFieldUpdateOperationsInput | string
-  user?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  user?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   btc_address?: Prisma.StringFieldUpdateOperationsInput | string
@@ -315,7 +276,7 @@ export type workernamesUncheckedUpdateInput = {
 
 export type workernamesCreateManyInput = {
   workername: string
-  user: bigint | number
+  user: string
   status?: string
   created_at?: Date | string
   btc_address: string
@@ -324,6 +285,7 @@ export type workernamesCreateManyInput = {
 
 export type workernamesUpdateManyMutationInput = {
   workername?: Prisma.StringFieldUpdateOperationsInput | string
+  user?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   btc_address?: Prisma.StringFieldUpdateOperationsInput | string
@@ -332,7 +294,7 @@ export type workernamesUpdateManyMutationInput = {
 
 export type workernamesUncheckedUpdateManyInput = {
   workername?: Prisma.StringFieldUpdateOperationsInput | string
-  user?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  user?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   btc_address?: Prisma.StringFieldUpdateOperationsInput | string
@@ -341,7 +303,7 @@ export type workernamesUncheckedUpdateManyInput = {
 
 export type workernamesWorkernameUserBtc_addressCompoundUniqueInput = {
   workername: string
-  user: bigint | number
+  user: string
   btc_address: string
 }
 
@@ -352,10 +314,6 @@ export type workernamesCountOrderByAggregateInput = {
   created_at?: Prisma.SortOrder
   btc_address?: Prisma.SortOrder
   code?: Prisma.SortOrder
-}
-
-export type workernamesAvgOrderByAggregateInput = {
-  user?: Prisma.SortOrder
 }
 
 export type workernamesMaxOrderByAggregateInput = {
@@ -376,158 +334,8 @@ export type workernamesMinOrderByAggregateInput = {
   code?: Prisma.SortOrder
 }
 
-export type workernamesSumOrderByAggregateInput = {
-  user?: Prisma.SortOrder
-}
-
-export type WorkernamesListRelationFilter = {
-  every?: Prisma.workernamesWhereInput
-  some?: Prisma.workernamesWhereInput
-  none?: Prisma.workernamesWhereInput
-}
-
-export type workernamesOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
-}
-
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
-}
-
-export type BigIntFieldUpdateOperationsInput = {
-  set?: bigint | number
-  increment?: bigint | number
-  decrement?: bigint | number
-  multiply?: bigint | number
-  divide?: bigint | number
-}
-
-export type workernamesCreateNestedManyWithoutUsersInput = {
-  create?: Prisma.XOR<Prisma.workernamesCreateWithoutUsersInput, Prisma.workernamesUncheckedCreateWithoutUsersInput> | Prisma.workernamesCreateWithoutUsersInput[] | Prisma.workernamesUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.workernamesCreateOrConnectWithoutUsersInput | Prisma.workernamesCreateOrConnectWithoutUsersInput[]
-  createMany?: Prisma.workernamesCreateManyUsersInputEnvelope
-  connect?: Prisma.workernamesWhereUniqueInput | Prisma.workernamesWhereUniqueInput[]
-}
-
-export type workernamesUncheckedCreateNestedManyWithoutUsersInput = {
-  create?: Prisma.XOR<Prisma.workernamesCreateWithoutUsersInput, Prisma.workernamesUncheckedCreateWithoutUsersInput> | Prisma.workernamesCreateWithoutUsersInput[] | Prisma.workernamesUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.workernamesCreateOrConnectWithoutUsersInput | Prisma.workernamesCreateOrConnectWithoutUsersInput[]
-  createMany?: Prisma.workernamesCreateManyUsersInputEnvelope
-  connect?: Prisma.workernamesWhereUniqueInput | Prisma.workernamesWhereUniqueInput[]
-}
-
-export type workernamesUpdateManyWithoutUsersNestedInput = {
-  create?: Prisma.XOR<Prisma.workernamesCreateWithoutUsersInput, Prisma.workernamesUncheckedCreateWithoutUsersInput> | Prisma.workernamesCreateWithoutUsersInput[] | Prisma.workernamesUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.workernamesCreateOrConnectWithoutUsersInput | Prisma.workernamesCreateOrConnectWithoutUsersInput[]
-  upsert?: Prisma.workernamesUpsertWithWhereUniqueWithoutUsersInput | Prisma.workernamesUpsertWithWhereUniqueWithoutUsersInput[]
-  createMany?: Prisma.workernamesCreateManyUsersInputEnvelope
-  set?: Prisma.workernamesWhereUniqueInput | Prisma.workernamesWhereUniqueInput[]
-  disconnect?: Prisma.workernamesWhereUniqueInput | Prisma.workernamesWhereUniqueInput[]
-  delete?: Prisma.workernamesWhereUniqueInput | Prisma.workernamesWhereUniqueInput[]
-  connect?: Prisma.workernamesWhereUniqueInput | Prisma.workernamesWhereUniqueInput[]
-  update?: Prisma.workernamesUpdateWithWhereUniqueWithoutUsersInput | Prisma.workernamesUpdateWithWhereUniqueWithoutUsersInput[]
-  updateMany?: Prisma.workernamesUpdateManyWithWhereWithoutUsersInput | Prisma.workernamesUpdateManyWithWhereWithoutUsersInput[]
-  deleteMany?: Prisma.workernamesScalarWhereInput | Prisma.workernamesScalarWhereInput[]
-}
-
-export type workernamesUncheckedUpdateManyWithoutUsersNestedInput = {
-  create?: Prisma.XOR<Prisma.workernamesCreateWithoutUsersInput, Prisma.workernamesUncheckedCreateWithoutUsersInput> | Prisma.workernamesCreateWithoutUsersInput[] | Prisma.workernamesUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.workernamesCreateOrConnectWithoutUsersInput | Prisma.workernamesCreateOrConnectWithoutUsersInput[]
-  upsert?: Prisma.workernamesUpsertWithWhereUniqueWithoutUsersInput | Prisma.workernamesUpsertWithWhereUniqueWithoutUsersInput[]
-  createMany?: Prisma.workernamesCreateManyUsersInputEnvelope
-  set?: Prisma.workernamesWhereUniqueInput | Prisma.workernamesWhereUniqueInput[]
-  disconnect?: Prisma.workernamesWhereUniqueInput | Prisma.workernamesWhereUniqueInput[]
-  delete?: Prisma.workernamesWhereUniqueInput | Prisma.workernamesWhereUniqueInput[]
-  connect?: Prisma.workernamesWhereUniqueInput | Prisma.workernamesWhereUniqueInput[]
-  update?: Prisma.workernamesUpdateWithWhereUniqueWithoutUsersInput | Prisma.workernamesUpdateWithWhereUniqueWithoutUsersInput[]
-  updateMany?: Prisma.workernamesUpdateManyWithWhereWithoutUsersInput | Prisma.workernamesUpdateManyWithWhereWithoutUsersInput[]
-  deleteMany?: Prisma.workernamesScalarWhereInput | Prisma.workernamesScalarWhereInput[]
-}
-
-export type workernamesCreateWithoutUsersInput = {
-  workername: string
-  status?: string
-  created_at?: Date | string
-  btc_address: string
-  code: string
-}
-
-export type workernamesUncheckedCreateWithoutUsersInput = {
-  workername: string
-  status?: string
-  created_at?: Date | string
-  btc_address: string
-  code: string
-}
-
-export type workernamesCreateOrConnectWithoutUsersInput = {
-  where: Prisma.workernamesWhereUniqueInput
-  create: Prisma.XOR<Prisma.workernamesCreateWithoutUsersInput, Prisma.workernamesUncheckedCreateWithoutUsersInput>
-}
-
-export type workernamesCreateManyUsersInputEnvelope = {
-  data: Prisma.workernamesCreateManyUsersInput | Prisma.workernamesCreateManyUsersInput[]
-  skipDuplicates?: boolean
-}
-
-export type workernamesUpsertWithWhereUniqueWithoutUsersInput = {
-  where: Prisma.workernamesWhereUniqueInput
-  update: Prisma.XOR<Prisma.workernamesUpdateWithoutUsersInput, Prisma.workernamesUncheckedUpdateWithoutUsersInput>
-  create: Prisma.XOR<Prisma.workernamesCreateWithoutUsersInput, Prisma.workernamesUncheckedCreateWithoutUsersInput>
-}
-
-export type workernamesUpdateWithWhereUniqueWithoutUsersInput = {
-  where: Prisma.workernamesWhereUniqueInput
-  data: Prisma.XOR<Prisma.workernamesUpdateWithoutUsersInput, Prisma.workernamesUncheckedUpdateWithoutUsersInput>
-}
-
-export type workernamesUpdateManyWithWhereWithoutUsersInput = {
-  where: Prisma.workernamesScalarWhereInput
-  data: Prisma.XOR<Prisma.workernamesUpdateManyMutationInput, Prisma.workernamesUncheckedUpdateManyWithoutUsersInput>
-}
-
-export type workernamesScalarWhereInput = {
-  AND?: Prisma.workernamesScalarWhereInput | Prisma.workernamesScalarWhereInput[]
-  OR?: Prisma.workernamesScalarWhereInput[]
-  NOT?: Prisma.workernamesScalarWhereInput | Prisma.workernamesScalarWhereInput[]
-  workername?: Prisma.StringFilter<"workernames"> | string
-  user?: Prisma.BigIntFilter<"workernames"> | bigint | number
-  status?: Prisma.StringFilter<"workernames"> | string
-  created_at?: Prisma.DateTimeFilter<"workernames"> | Date | string
-  btc_address?: Prisma.StringFilter<"workernames"> | string
-  code?: Prisma.StringFilter<"workernames"> | string
-}
-
-export type workernamesCreateManyUsersInput = {
-  workername: string
-  status?: string
-  created_at?: Date | string
-  btc_address: string
-  code: string
-}
-
-export type workernamesUpdateWithoutUsersInput = {
-  workername?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  btc_address?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
-}
-
-export type workernamesUncheckedUpdateWithoutUsersInput = {
-  workername?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  btc_address?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
-}
-
-export type workernamesUncheckedUpdateManyWithoutUsersInput = {
-  workername?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  btc_address?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -539,7 +347,6 @@ export type workernamesSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   created_at?: boolean
   btc_address?: boolean
   code?: boolean
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workernames"]>
 
 export type workernamesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -549,7 +356,6 @@ export type workernamesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   created_at?: boolean
   btc_address?: boolean
   code?: boolean
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workernames"]>
 
 export type workernamesSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -559,7 +365,6 @@ export type workernamesSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   created_at?: boolean
   btc_address?: boolean
   code?: boolean
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workernames"]>
 
 export type workernamesSelectScalar = {
@@ -572,24 +377,13 @@ export type workernamesSelectScalar = {
 }
 
 export type workernamesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"workername" | "user" | "status" | "created_at" | "btc_address" | "code", ExtArgs["result"]["workernames"]>
-export type workernamesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
-}
-export type workernamesIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
-}
-export type workernamesIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
-}
 
 export type $workernamesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "workernames"
-  objects: {
-    users: Prisma.$usersPayload<ExtArgs>
-  }
+  objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     workername: string
-    user: bigint
+    user: string
     status: string
     created_at: Date
     btc_address: string
@@ -988,7 +782,6 @@ readonly fields: workernamesFieldRefs;
  */
 export interface Prisma__workernamesClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  users<T extends Prisma.usersDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.usersDefaultArgs<ExtArgs>>): Prisma.Prisma__usersClient<runtime.Types.Result.GetResult<Prisma.$usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1019,7 +812,7 @@ export interface Prisma__workernamesClient<T, Null = never, ExtArgs extends runt
  */
 export interface workernamesFieldRefs {
   readonly workername: Prisma.FieldRef<"workernames", 'String'>
-  readonly user: Prisma.FieldRef<"workernames", 'BigInt'>
+  readonly user: Prisma.FieldRef<"workernames", 'String'>
   readonly status: Prisma.FieldRef<"workernames", 'String'>
   readonly created_at: Prisma.FieldRef<"workernames", 'DateTime'>
   readonly btc_address: Prisma.FieldRef<"workernames", 'String'>
@@ -1041,10 +834,6 @@ export type workernamesFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.workernamesOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.workernamesInclude<ExtArgs> | null
-  /**
    * Filter, which workernames to fetch.
    */
   where: Prisma.workernamesWhereUniqueInput
@@ -1063,10 +852,6 @@ export type workernamesFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Exten
    */
   omit?: Prisma.workernamesOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.workernamesInclude<ExtArgs> | null
-  /**
    * Filter, which workernames to fetch.
    */
   where: Prisma.workernamesWhereUniqueInput
@@ -1084,10 +869,6 @@ export type workernamesFindFirstArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the workernames
    */
   omit?: Prisma.workernamesOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.workernamesInclude<ExtArgs> | null
   /**
    * Filter, which workernames to fetch.
    */
@@ -1137,10 +918,6 @@ export type workernamesFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extens
    */
   omit?: Prisma.workernamesOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.workernamesInclude<ExtArgs> | null
-  /**
    * Filter, which workernames to fetch.
    */
   where?: Prisma.workernamesWhereInput
@@ -1189,10 +966,6 @@ export type workernamesFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.workernamesOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.workernamesInclude<ExtArgs> | null
-  /**
    * Filter, which workernames to fetch.
    */
   where?: Prisma.workernamesWhereInput
@@ -1236,10 +1009,6 @@ export type workernamesCreateArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.workernamesOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.workernamesInclude<ExtArgs> | null
-  /**
    * The data needed to create a workernames.
    */
   data: Prisma.XOR<Prisma.workernamesCreateInput, Prisma.workernamesUncheckedCreateInput>
@@ -1273,10 +1042,6 @@ export type workernamesCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    */
   data: Prisma.workernamesCreateManyInput | Prisma.workernamesCreateManyInput[]
   skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.workernamesIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1291,10 +1056,6 @@ export type workernamesUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the workernames
    */
   omit?: Prisma.workernamesOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.workernamesInclude<ExtArgs> | null
   /**
    * The data needed to update a workernames.
    */
@@ -1347,10 +1108,6 @@ export type workernamesUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    * Limit how many workernames to update.
    */
   limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.workernamesIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1365,10 +1122,6 @@ export type workernamesUpsertArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the workernames
    */
   omit?: Prisma.workernamesOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.workernamesInclude<ExtArgs> | null
   /**
    * The filter to search for the workernames to update in case it exists.
    */
@@ -1395,10 +1148,6 @@ export type workernamesDeleteArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the workernames
    */
   omit?: Prisma.workernamesOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.workernamesInclude<ExtArgs> | null
   /**
    * Filter which workernames to delete.
    */
@@ -1431,8 +1180,4 @@ export type workernamesDefaultArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the workernames
    */
   omit?: Prisma.workernamesOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.workernamesInclude<ExtArgs> | null
 }

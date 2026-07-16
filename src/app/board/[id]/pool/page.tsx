@@ -16,7 +16,7 @@ import { Weights } from "../../../../../models/API Payloads/Weights";
 import { UserInstantStats } from "../../../../../models/API Payloads/Stats";
 import { PoolHistoryRecord } from "../../../../../models/API Payloads/PoolHistoryRecord";
 
-import UnitConverter from "../../../../../lib/UnitConverter";
+import UnitConverter from "../../../../lib/UnitConverter";
 
 import "./styles.css";
 

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { env } from "@/server/env";
 
 export const GET = async(_req: Request, { params }: { params: Promise<{ address: string }> }) => {
   const controller = new AbortController();
@@ -7,7 +8,7 @@ export const GET = async(_req: Request, { params }: { params: Promise<{ address:
   try {
     const p = await params;
 
-    const upstream = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/stats/${p.address}`, {
+    const upstream = await fetch(`${env.apiUrl}/api/stats/${p.address}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
       signal: controller.signal,

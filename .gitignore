@@ -45,3 +45,6 @@ generated/prisma/internal
 
 docker-compose.yml
 nginx.conf
+
+# Generated at runtime by docker-entrypoint.sh
+public/config.js

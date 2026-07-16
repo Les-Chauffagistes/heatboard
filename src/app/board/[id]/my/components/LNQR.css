@@ -1,8 +1,0 @@
-#qr {
-    filter: blur(10px);
-    transition: filter 0.5s ease;
-}
-
-#qr.visible {
-    filter: blur(0px);
-}

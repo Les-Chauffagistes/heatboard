@@ -1,7 +1,9 @@
 import { prisma } from "@/server/Prisma";
 import { NextResponse } from "next/server";
-import randint from "../../../../../../lib/Random";
-import getCurrentUser from "@/app/api/session/utils";
+import randint from "../../../../../lib/Random";
+import { getMe } from "@/lib/auth";
+import { getServerCookieHeader } from "@/lib/auth.server";
+
 
 export const GET = async (_req: Request, { params }: { params: Promise<{ address: string, workername: string }> }) => {
   const controller = new AbortController();
@@ -30,7 +32,7 @@ export const GET = async (_req: Request, { params }: { params: Promise<{ address
 }
 
 export const POST = async (req: Request, { params }: { params: Promise<{ address: string, workername: string }> }) => {
-  const user = await getCurrentUser();
+  const user = await getMe(await getServerCookieHeader());
   const p = await params;
   if (!user) {
     return NextResponse.json({ error: "Auth required" }, { status: 401 });
@@ -52,7 +54,7 @@ export const POST = async (req: Request, { params }: { params: Promise<{ address
   // On vérifie si l'utilisateur a déjà réserver un workername
   const userReserved = await prisma.workernames.count({
     where: {
-      user: user.id,
+      user: user.user_id,
       btc_address: p.address,
       status: "done"
     }
@@ -62,7 +64,7 @@ export const POST = async (req: Request, { params }: { params: Promise<{ address
   // On vérifie si l'utilisateur a déjà une réservation de statut 'pending'
   const pending = await prisma.workernames.findFirst({
     where: {
-      user: user.id,
+      user: user.user_id,
       btc_address: p.address,
       status: "pending"
     }
@@ -77,7 +79,7 @@ export const POST = async (req: Request, { params }: { params: Promise<{ address
 
 
   const code = randint(111111, 999999);
-  await prisma.workernames.create({ data: { workername: p.workername, user: user.id, btc_address: p.address, code: code.toString() } })
+  await prisma.workernames.create({ data: { workername: p.workername, user: user.user_id, btc_address: p.address, code: code.toString() } })
   return NextResponse.json({ type: 'new', code: code })
 
 }

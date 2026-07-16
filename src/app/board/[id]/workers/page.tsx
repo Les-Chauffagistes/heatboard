@@ -15,8 +15,8 @@ import WorkerPannel from "./components/WorkerPannel";
 import WorkerList from "./components/WorkerList";
 
 
-import UnitConverter from "@/../lib/UnitConverter";
-import ExtractWorkername from "@/../lib/ExtractWorkername";
+import UnitConverter from "@/lib/UnitConverter";
+import ExtractWorkername from "@/lib/ExtractWorkername";
 
 import { UserInstantStats } from "@/../models/API Payloads/Stats";
 import { CleanWorkerHashrate } from "@/../models/CleanWorkerHashrate";

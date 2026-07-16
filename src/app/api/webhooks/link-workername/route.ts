@@ -58,7 +58,7 @@ export async function POST(req: Request) {
                 }
             })
 
-            const user = await prisma.users.findFirst({
+            const user = await prisma.user.findFirst({
                 where: {
                     id: config.user
                 }
