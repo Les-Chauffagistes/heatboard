@@ -2,14 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession } from "@/app/hooks/useSession";
-import { logOut } from "@/lib/auth";
+import NavbarMenu from "./NavbarMenu";
 import "./desktopNavbar.css"
 
 
 export function DesktopNavbar() {
     const path = usePathname();
-    const { user } = useSession();
     return (
         <div id="desktop-navbar" style={{
             display: "flex",
@@ -35,17 +33,9 @@ export function DesktopNavbar() {
                 </div>
             </Link>
 
-            {user && (
-                <button style={{ marginLeft: "auto" }} className="tertiary" onClick={async () => {
-                    await logOut();
-                    globalThis.location.reload()
-                }}>
-                    <div>
-                        Déconnexion
-                    </div>
-                </button>
-            )}
-
+            <div style={{ marginLeft: "auto" }}>
+                <NavbarMenu variant="inline" />
+            </div>
         </div>
     )
 }

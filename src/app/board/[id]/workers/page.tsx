@@ -5,13 +5,14 @@ import { usePathname } from "next/navigation";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
 import { Computer, Search, User } from "lucide-react";
+import { AgGridReact } from "ag-grid-react";
 
 import { getBtcBlockReward, getBtcPrice, getPoolWeight, getPoolStats } from "@/app/api";
+import { useTheme } from "@/app/hooks/useTheme";
 
 import StatsWidgetBar from "../../components/StatsWidgetBar";
 import { MainGrid } from "./components/Table";
 import { Toolbar } from "./components/Toolbar"
-import WorkerPannel from "./components/WorkerPannel";
 import WorkerList from "./components/WorkerList";
 
 
@@ -36,7 +37,6 @@ export default function Home() {
     const [userStats, setUserStats] = useState<UserInstantStats | null>(null);
     const [weights, setWeights] = useState<Weights[]>([]);
     const [visibleColumns, setVisibleColumns] = useState<Set<VisibleColumns>>(new Set(INITIAL_VISIBLE_COLUMNS));
-    const [selectedWorker, setSelectedWorker] = useState<Worker | null>(null);
     const [bitcoinPrice, setBitcoinPrice] = useState<number | null>(null);
     const [bitcoinBlockReward, setBitcoinBlockReward] = useState<number | null>(null);
     const [orderBy, setOrderBy] = useState<keyof CleanWorkerHashrate>("weight");
@@ -48,10 +48,11 @@ export default function Home() {
     const userAddress = pathname?.split("/")[2];
     const isCommunityPool = userAddress === COMMUNITY_POOL_ADDRESS;
 
-    const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-    const theme = useMemo(() => createTheme({ palette: { mode: prefersDarkMode ? "dark" : "light" } }), [prefersDarkMode]);
+    const { isDark } = useTheme();
+    const theme = useMemo(() => createTheme({ palette: { mode: isDark ? "dark" : "light" } }), [isDark]);
 
     const activeColumnsRef = useRef<string[]>([]);
+    const gridRef = useRef<AgGridReact<CleanWorkerHashrate>>(null);
 
     useEffect(() => {
         const stored = localStorage.getItem("activeColumns");
@@ -148,6 +149,35 @@ export default function Home() {
         }
     }
 
+    function handleExportCsv() {
+        const date = new Date().toISOString().slice(0, 10);
+        // Colonnes numériques : on exporte la valeur brute (déjà convertie en H/s, %, ou BTC
+        // dans `data`) plutôt que la chaîne formatée avec unité, sinon impossible de faire
+        // des calculs dans un tableur.
+        const numericColIds = new Set([
+            "hashrate1m", "hashrate5m", "hashrate1h", "hashrate1d", "hashrate7d",
+            "shares", "bestshare", "avg_weight", "rewardBtc"
+        ]);
+        const headerUnits: Record<string, string> = {
+            hashrate1m: "H/s", hashrate5m: "H/s", hashrate1h: "H/s", hashrate1d: "H/s", hashrate7d: "H/s",
+            avg_weight: "%", rewardBtc: "BTC"
+        };
+        gridRef.current?.api.exportDataAsCsv({
+            fileName: `chauffagistes-workers-${date}.csv`,
+            processCellCallback: (params) => {
+                const colId = params.column.getColId();
+                if (colId === "workername") return params.value?.split(".")[1] ?? params.value ?? "";
+                if (numericColIds.has(colId)) return params.value ?? "";
+                return params.value ?? "";
+            },
+            processHeaderCallback: (params) => {
+                const headerName = params.column.getColDef().headerName ?? params.column.getColId();
+                const unit = headerUnits[params.column.getColId()];
+                return unit ? `${headerName} (${unit})` : headerName;
+            },
+        });
+    }
+
     const options = [
         { id: "1m", label: "1 m", checked: visibleColumns.has("hashrate1m"), onChange: () => handleColumnToggle("hashrate1m") },
         { id: "5m", label: "5 m", checked: visibleColumns.has("hashrate5m"), onChange: () => handleColumnToggle("hashrate5m") },
@@ -216,24 +246,19 @@ export default function Home() {
                         <div style={{
                             display: "flex"
                         }}>
-                            <Toolbar options={options} />
+                            <Toolbar options={options} onExportCsv={handleExportCsv} />
                         </div>
-                        <div id="main-view" style={{ display: "flex", flexWrap: "wrap", gap: 10, margin: 10 }}>
-                            <div style={{ display: "flex", flex: 3 }}>
-                                <MainGrid workers={data}
-                                    btcPrice={bitcoinPrice}
-                                    isCommunityPool={isCommunityPool}
-                                    isHashrate1mVisible={isHashrate1mVisible}
-                                    isHashrate5mVisible={isHashrate5mVisible}
-                                    isHashrate1hrVisible={isHashrate1hrVisible}
-                                    isHashrate1dVisible={isHashrate1dVisible}
-                                    isHashrate7dVisible={isHashrate7dVisible}
-                                    onSelectWorker={setSelectedWorker}
-                                />
-                            </div>
-                            <div style={{ display: "flex", flex: 2, backgroundColor: "var(--card-background-color)", borderRadius: 8, border: "1px solid var(--card-outline-color)" }}>
-                                <WorkerPannel worker={selectedWorker} userAddress={userAddress} showWeight={isCommunityPool} />
-                            </div>
+                        <div id="main-view" style={{ display: "flex", flex: 1, minHeight: 0, margin: 10 }}>
+                            <MainGrid ref={gridRef} workers={data}
+                                userAddress={userAddress}
+                                btcPrice={bitcoinPrice}
+                                isCommunityPool={isCommunityPool}
+                                isHashrate1mVisible={isHashrate1mVisible}
+                                isHashrate5mVisible={isHashrate5mVisible}
+                                isHashrate1hrVisible={isHashrate1hrVisible}
+                                isHashrate1dVisible={isHashrate1dVisible}
+                                isHashrate7dVisible={isHashrate7dVisible}
+                            />
                         </div>
                     </> :
                     <div style={{

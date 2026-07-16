@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useTheme } from '@/app/hooks/useTheme';
+import MockingProvider from '@/app/MockingProvider';
 
 interface ThemeBodyProps {
   readonly children: React.ReactNode;
@@ -8,20 +9,7 @@ interface ThemeBodyProps {
 }
 
 export default function ThemeBody({ children, className }: Readonly<ThemeBodyProps>) {
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    // Détecte le thème au montage
-    const prefersDark = globalThis?.matchMedia?.('(prefers-color-scheme: dark)').matches ?? true;
-    setIsDark(prefersDark);
-
-    // Écoute les changements de thème
-    const mediaQuery = globalThis?.matchMedia?.('(prefers-color-scheme: dark)');
-    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
-    mediaQuery?.addEventListener('change', handler);
-
-    return () => mediaQuery?.removeEventListener('change', handler);
-  }, []);
+  const { isDark } = useTheme();
 
   return (
     <body 
@@ -30,7 +18,7 @@ export default function ThemeBody({ children, className }: Readonly<ThemeBodyPro
         backgroundColor: isDark ? "#1f1f1f" : "#ce8415ff"
       }}
     >
-      {children}
+      <MockingProvider>{children}</MockingProvider>
     </body>
   );
 }

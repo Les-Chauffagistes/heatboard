@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { Settings } from "lucide-react";
+import { Settings, Download } from "lucide-react";
 import "./toolbar.css"; // styles séparés
 
 type ToolbarProps = {
   options: { id: string; label: string; checked: boolean; onChange: (v: boolean) => void }[];
+  onExportCsv?: () => void;
 };
 
-export function Toolbar({ options }: ToolbarProps) {
+export function Toolbar({ options, onExportCsv }: ToolbarProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -32,6 +33,19 @@ export function Toolbar({ options }: ToolbarProps) {
           </label>
         ))}
       </div>
+
+      {onExportCsv && (
+        <button
+          type="button"
+          className="secondary"
+          onClick={onExportCsv}
+          aria-label="Exporter les statistiques au format CSV"
+          style={{ display: "flex", alignItems: "center", gap: 6, marginLeft: "auto" }}
+        >
+          <Download size={16} />
+          Exporter CSV
+        </button>
+      )}
     </div>
   );
 }

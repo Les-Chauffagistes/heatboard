@@ -6,7 +6,6 @@ import ExtractWorkername from "../../../../../lib/ExtractWorkername";
 
 
 export default function ClaimWorkerPopup({ worker, open, setOpen, code }: { worker: Worker | null, open: boolean, setOpen: (open: boolean) => void, code: number | null }) {
-    console.log(code, worker, open)
     if (!code) return null
     if (!worker) return null
     const workerName = ExtractWorkername.fromPool(worker.workername);
