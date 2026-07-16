@@ -8,12 +8,12 @@ Backend-For-Frontend au-dessus d'API externes et d'une base **PostgreSQL** (via 
 
 ## Services dont dépend le dashboard
 
-| Service                                                                     | Rôle                          | Variable                                                |
-|-----------------------------------------------------------------------------|-------------------------------|---------------------------------------------------------|
-| API publique de la pool                                                     | Statistiques instantanées     | `API_URL` (défaut `https://chauffagistes-pool.fr:3000`) |
-| [Serveur d'historique](https://github.com/Les-Chauffagistes/history-server) | Séries temporelles            | `HISTORY_API_URL`                                       |
-| API Bitcoin                                                                 | Prix & récompense de bloc     | `BITCOIN_API_URL`                                       |
-| Service d'authentification                                                  | Session utilisateur (cookies) | `AUTH_URL` / `AUTH_API_URL`                             |
+| Service                                                                                                                                                        | Rôle                          | Variable                                                |
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------|---------------------------------------------------------|
+| [API publique de la pool](https://github.com/Les-Chauffagistes/chauffagistes-pool-api)                                                                         | Statistiques instantanées     | `API_URL` (défaut `https://chauffagistes-pool.fr:3000`) |
+| [Serveur d'historique](https://github.com/Les-Chauffagistes/history-server)                                                                                    | Séries temporelles            | `HISTORY_API_URL`                                       |
+| [API Bitcoin](https://github.com/Les-Chauffagistes/bitcoin-service)                                                                                            | Prix & récompense de bloc     | `BITCOIN_API_URL`                                       |
+| Service d'authentification ([Back](https://github.com/Les-Chauffagistes/auth-service-back) & [Front](https://github.com/Les-Chauffagistes/auth-service-front)) | Session utilisateur (cookies) | `AUTH_API_URL` / `AUTH_URL`                             |
 
 > En l'état, vous ne pouvez pas héberger une instance pleinement fonctionnelle : le
 > dashboard s'appuie sur une base peuplée par le serveur d'historique, qui exploite une
@@ -50,7 +50,7 @@ Le dashboard est alors disponible sur http://localhost:3002.
 
 ## Développement avec API externes mockées (MSW)
 
-Les environnements de staging (`*.staging.chauffagistes-btc.fr`) n'autorisent pas
+Les environnements de production n'autorisent pas
 `http://localhost:3002` dans leur CORS, ce qui empêche `next dev` de récupérer leurs
 données. Pour tester l'UI en local sans dépendre de ces API, on mocke les 4 API externes
 (pool, historique, bitcoin, auth) avec [Mock Service Worker](https://mswjs.io/) :
@@ -66,13 +66,13 @@ internes `/api/*` (même origine, pas de CORS) ne sont pas concernées.
 
 ## Scripts
 
-| Commande | Description |
-|----------|-------------|
-| `npm run dev` | Serveur de développement (Turbopack, port 3002) |
-| `npm run dev:mock` | Idem avec les API externes mockées (MSW) |
-| `npm run build` | Build de production (`output: standalone`) |
-| `npm run start` | Serveur de production (port 3002) |
-| `npm run lint` | ESLint |
+| Commande           | Description                                     |
+|--------------------|-------------------------------------------------|
+| `npm run dev`      | Serveur de développement (Turbopack, port 3002) |
+| `npm run dev:mock` | Idem avec les API externes mockées (MSW)        |
+| `npm run build`    | Build de production (`output: standalone`)      |
+| `npm run start`    | Serveur de production (port 3002)               |
+| `npm run lint`     | ESLint                                          |
 
 ## Configuration
 
