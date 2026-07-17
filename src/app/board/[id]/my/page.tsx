@@ -79,7 +79,7 @@ export default function LoginPage() {
             flex: 1,
             gap: 30
         }}>
-            <h3>Gérez vos machines de minage et votre adresse de paiement</h3>
+            <h3 style={{textAlign: "center", maxWidth: "80%"}}>Gérez vos machines de minage et votre adresse de paiement</h3>
             <a href={`${config.AUTH_URL}/login?redirect=${config.BASE_URL}${path}`}><button className="primary">Se connecter</button></a>
         </div>
     </>;
