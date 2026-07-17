@@ -9,6 +9,8 @@ import { AgGridReact } from "ag-grid-react";
 
 import { getBtcBlockReward, getBtcPrice, getPoolWeight, getPoolStats } from "@/app/api";
 import { useTheme } from "@/app/hooks/useTheme";
+import { useHideOnScroll } from "@/app/hooks/useHideOnScroll";
+import { setMobileNavInputFocused, setMobileNavScrolledDown } from "@/app/hooks/useMobileNavVisibility";
 
 import StatsWidgetBar from "../../components/StatsWidgetBar";
 import { MainGrid } from "./components/Table";
@@ -109,6 +111,13 @@ export default function Home() {
     }, [userAddress]);
 
     const isLargeScreen = useMediaQuery("(min-width: 800px)");
+
+    const pageScrollRef = useHideOnScroll(setMobileNavScrolledDown);
+
+    useEffect(() => () => {
+        setMobileNavInputFocused(false);
+        setMobileNavScrolledDown(false);
+    }, []);
 
     if (isLoading) {
         return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Préchauffage...</div>;
@@ -219,9 +228,12 @@ export default function Home() {
 
     return (
         <ThemeProvider theme={theme}>
-            <div style={{
-                overflow: "scroll",
+            <div ref={pageScrollRef} style={{
                 flex: 1,
+                minHeight: 0,
+                overflowY: "auto",
+                overscrollBehavior: "contain",
+                WebkitOverflowScrolling: "touch",
                 display: "flex",
                 flexDirection: "column"
             }} id="page">
@@ -263,6 +275,7 @@ export default function Home() {
                     </> :
                     <div style={{
                         margin: "0 10px 10px",
+                        paddingBottom: "var(--mobile-navbar-height, 64px)",
                     }}>
                         <div style={{
                             display: "flex",
@@ -300,7 +313,10 @@ export default function Home() {
                                     border: "1px solid var(--card-outline-color)",
                                     backgroundColor: "var(--input-background-color)"
                                 }}
-                                    placeholder="Workername" type="text" id="search-input" onChange={e => setSearchText(e.target.value)}
+                                    placeholder="Workername" type="text" id="search-input"
+                                    onChange={e => setSearchText(e.target.value)}
+                                    onFocus={() => setMobileNavInputFocused(true)}
+                                    onBlur={() => setMobileNavInputFocused(false)}
                                 />
                             </div>
                             <select onChange={orderHandler} style={{

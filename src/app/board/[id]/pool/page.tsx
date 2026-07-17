@@ -82,9 +82,12 @@ export default function Welcome() {
                 display: "flex",
                 flexDirection: "column",
                 flex: 1,
-                overflow: "scroll",
-                height: "100%",
-                gap: 10
+                minHeight: 0,
+                overflowY: "auto",
+                overscrollBehavior: "contain",
+                WebkitOverflowScrolling: "touch",
+                gap: 10,
+                paddingBottom: isLargeScreen ? undefined : "var(--mobile-navbar-height, 64px)"
             }}>
                 {poolStats ?
                     <div style={{

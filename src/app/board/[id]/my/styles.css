@@ -9,7 +9,9 @@
 /* Profile page */
 .profile-page {
     flex: 1;
+    min-height: 0;
     overflow: auto;
+    overscroll-behavior: contain;
     display: flex;
     flex-direction: column;
 }
@@ -262,6 +264,12 @@
     color: var(--secondary-white-text-color);
 }
 
+@media (max-width: 800px) {
+    .profile-content {
+        padding-bottom: calc(40px + var(--mobile-navbar-height, 64px));
+    }
+}
+
 @media (max-width: 600px) {
     .profile-header {
         padding: 28px 16px 22px;
@@ -272,7 +280,7 @@
     }
 
     .profile-content {
-        padding: 20px 16px 30px;
+        padding: 20px 16px calc(30px + var(--mobile-navbar-height, 64px));
     }
 
     .profile-section {
