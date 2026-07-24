@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Check, LogOut, Menu, Moon, MonitorSmartphone, Sun } from "lucide-react";
+import { Check, LogOut, Menu, Moon, MonitorSmartphone, Sun, CircleUser } from "lucide-react";
 import { useSession } from "@/app/hooks/useSession";
 import { useTheme, ThemePreference } from "@/app/hooks/useTheme";
 import { logOut } from "@/lib/auth";
 import "./navbarMenu.css";
+import { config } from "@/lib/config";
 
 const THEME_OPTIONS: { value: ThemePreference; label: string; icon: React.ReactNode }[] = [
     { value: "light", label: "Clair", icon: <Sun size={16} /> },
@@ -91,6 +92,21 @@ export default function NavbarMenu({ variant = "inline" }: { variant?: "inline" 
                             <div className="navbar-menu-section">
                                 <div className="navbar-menu-section-label">Compte</div>
                                 <div className="navbar-menu-group">
+                                  <button
+                                    type="button"
+                                    className="navbar-menu-item"
+                                    onClick={() => {
+                                      const url = new URL(config.AUTH_URL);
+                                      url.searchParams.set("redirect", globalThis.location.href);
+                                      url.searchParams.set("appname", "Heatboard");
+                                      globalThis.location.href = url.toString();
+                                    }}
+                                  >
+                                        <span className="navbar-menu-item-icon">
+                                            <CircleUser size={16} />
+                                        </span>
+                                    <span className="navbar-menu-item-label">Compte Chauffagistes</span>
+                                  </button>
                                     <button
                                         type="button"
                                         className="navbar-menu-item navbar-menu-item-danger"
