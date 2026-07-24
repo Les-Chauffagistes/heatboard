@@ -23,7 +23,7 @@ const THEME_OPTIONS: { value: ThemePreference; label: string; icon: React.ReactN
  * Utilise le même `useTheme` partagé que le reste de l'app : changer le thème ici
  * met instantanément à jour tous les autres composants qui l'utilisent.
  */
-export default function NavbarMenu({ variant = "inline" }: { variant?: "inline" | "floating" }) {
+export default function NavbarMenu({ variant = "inline" }: Readonly<{ variant?: "inline" | "floating" }>) {
     const { user } = useSession();
     const { theme, setTheme } = useTheme();
     const [open, setOpen] = useState(false);
