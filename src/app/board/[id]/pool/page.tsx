@@ -6,6 +6,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
 import { CircleStar, Flame, SatelliteDish } from "lucide-react";
 import { getPoolHistory, getPoolStats, getPoolWeight } from "@/app/api";
+import { useTheme } from "@/app/hooks/useTheme";
 
 import HashrateChart from "./components/HashrateChart";
 import CombinedWidgetCard from "./components/CombinedWidgetCard";
@@ -26,8 +27,8 @@ export default function Welcome() {
     const path = usePathname();
     const userAddress = path?.split("/")[2];
 
-    const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-    const theme = useMemo(() => createTheme({ palette: { mode: prefersDarkMode ? "dark" : "light" } }), [prefersDarkMode]);
+    const { isDark } = useTheme();
+    const theme = useMemo(() => createTheme({ palette: { mode: isDark ? "dark" : "light" } }), [isDark]);
 
     const [poolStatsHistory, setPoolStatsHistory] = useState<PoolHistoryRecord[] | null>(null);
     const [poolStats, setPoolStats] = useState<UserInstantStats | null>(null);
@@ -81,9 +82,12 @@ export default function Welcome() {
                 display: "flex",
                 flexDirection: "column",
                 flex: 1,
-                overflow: "scroll",
-                height: "100%",
-                gap: 10
+                minHeight: 0,
+                overflowY: "auto",
+                overscrollBehavior: "contain",
+                WebkitOverflowScrolling: "touch",
+                gap: 10,
+                paddingBottom: isLargeScreen ? undefined : "var(--mobile-navbar-height, 64px)"
             }}>
                 {poolStats ?
                     <div style={{

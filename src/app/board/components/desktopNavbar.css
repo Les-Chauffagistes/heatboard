@@ -1,4 +1,4 @@
-#desktop-navbar div {
+#desktop-navbar a div {
     line-height: 1;        /* élimine les variations verticales */
     font-weight: 600;      /* poids constant */
     display: flex;

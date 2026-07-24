@@ -3,7 +3,14 @@ import MobileNavbar from "../components/MobileNavbar";
 
 export default function Layout({ children }: Readonly<{children: React.ReactNode;}>) {
     return (
-        <div style={{display: "flex", flexDirection: "column", height: "100dvh", backgroundColor: "var(--background)"}}>
+        <div style={{
+            position: "fixed",
+            inset: 0,
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+            backgroundColor: "var(--background)"
+        }}>
             <DesktopNavbar />
             {children}
             <MobileNavbar />

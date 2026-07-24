@@ -20,3 +20,9 @@
     color: var(--mobile-navbar-active-color) !important;
     font-weight: 900 !important;
 }
+
+@media (prefers-reduced-motion: reduce) {
+    #mobile-navbar {
+        transition: none !important;
+    }
+}
