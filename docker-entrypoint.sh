@@ -3,13 +3,13 @@ set -e
 
 
 # Injection des secrets
-DB_PASS=$(cat /run/secrets/heatboard_staging_db_password)
+DB_PASS=$(cat /run/secrets/heatboard_db_password)
 export PGPASSWORD="${DB_PASS}"
 export DATABASE_URL="postgresql://postgres:${DB_PASS}@${PGHOST}:${PGPORT:-5432}/${PGDATABASE}"
-export POOL_TOKEN=$(cat /run/secrets/heatboard_staging_pool_token)
-export SESSION_PASSWORD=$(cat /run/secrets/heatboard_staging_session_password)
-export DISCORD_CLIENT_SECRET=$(cat /run/secrets/heatboard_staging_discord_client_secret)
-export NEXTAUTH_SECRET=$(cat /run/secrets/heatboard_staging_nextauth_secret)
+export POOL_TOKEN=$(cat /run/secrets/heatboard_pool_token)
+export SESSION_PASSWORD=$(cat /run/secrets/heatboard_session_password)
+export DISCORD_CLIENT_SECRET=$(cat /run/secrets/heatboard_discord_client_secret)
+export NEXTAUTH_SECRET=$(cat /run/secrets/heatboard_nextauth_secret)
 
 cat > public/config.js << CONF
 window.__CONFIG__ = {
