@@ -1,10 +1,16 @@
 import { type NextRequest } from 'next/server'
-import { NextResponse } from 'next/server';
 import { decrypt, websockets, resolveUser } from '@/server/websockets';
 
-// app/api/ws/route.ts
+// Les requêtes d'upgrade WebSocket sont interceptées en amont par next-ws et
+// n'atteignent jamais ce handler. Un GET qui arrive ici signifie que les en-têtes
+// Upgrade / Connection ont été retirés en route (reverse proxy, CDN) ou qu'un client
+// appelle l'URL en HTTP simple : on le signale explicitement plutôt que de laisser
+// remonter une erreur opaque.
 export const GET = () => {
-  return NextResponse.next();
+  return new Response('WebSocket upgrade required', {
+    status: 426,
+    headers: { Upgrade: 'websocket' },
+  });
 };
 
 // prévu plus tard
