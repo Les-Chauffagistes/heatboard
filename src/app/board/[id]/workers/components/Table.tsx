@@ -224,7 +224,9 @@ export const MainGrid = forwardRef<AgGridReact<CleanWorkerHashrate>, {
                     colId: "rewardBtc",
                     valueFormatter: (params: ValueFormatterParams) => {
                         if (!params.value) return noData;
-                        return formatNumber(params.value.toFixed(3)) + " ₿ - " + formatNumber((params.value * btcPrice!).toFixed(0)) + " €";
+                        const btcPart = formatNumber(params.value.toFixed(3)) + " ₿";
+                        if (!btcPrice) return btcPart;
+                        return btcPart + " - " + formatNumber((params.value * btcPrice).toFixed(0)) + " €";
                     },
                     headerComponent: HeaderWithInfo,
                     headerComponentParams: {

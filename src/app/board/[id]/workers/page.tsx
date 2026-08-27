@@ -82,27 +82,39 @@ export default function Home() {
         setError(null);
 
         const fetchData = async () => {
+            // Données essentielles : leur échec bloque le rendu de la page.
             try {
-                const [stats, weights, price, blockReward] = await Promise.all([
+                const [stats, weights] = await Promise.all([
                     getPoolStats(userAddress),
                     getPoolWeight(userAddress),
-                    getBtcPrice(),
-                    getBtcBlockReward(),
                 ]);
 
                 if (abortController.signal.aborted) return;
 
                 setUserStats(stats);
                 setWeights(weights);
-                setBitcoinPrice(price.EUR);
-                setBitcoinBlockReward(blockReward);
                 setIsLoading(false);
             } catch (err) {
                 if (!abortController.signal.aborted) {
                     setError(err instanceof Error ? err.message : "Erreur lors du chargement des données");
                     setIsLoading(false);
                 }
+                return;
             }
+
+            // Données secondaires (prix BTC, récompense de bloc) : elles ne peuplent
+            // qu'une colonne du tableau, leur échec ne doit pas empêcher l'affichage du reste.
+            getBtcPrice()
+                .then((price) => {
+                    if (!abortController.signal.aborted) setBitcoinPrice(price.EUR);
+                })
+                .catch(() => {});
+
+            getBtcBlockReward()
+                .then((blockReward) => {
+                    if (!abortController.signal.aborted) setBitcoinBlockReward(blockReward);
+                })
+                .catch(() => {});
         };
 
         fetchData();
@@ -217,8 +229,8 @@ export default function Home() {
                 hashrate7d: UnitConverter.fromStringToNumber(worker.hashrate7d),
                 weight: worker.weight
             }
-            if (isCommunityPool) {
-                base.rewardBtc = bitcoinBlockReward! * (base.weight / 100);
+            if (isCommunityPool && bitcoinBlockReward !== null) {
+                base.rewardBtc = bitcoinBlockReward * (base.weight / 100);
             }
             return base
         }).filter(worker => !!ExtractWorkername.fromPool(worker.workername)); // To test
