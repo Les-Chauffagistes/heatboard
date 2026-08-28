@@ -2,6 +2,7 @@ import { prisma } from "@/server/Prisma";
 import { NextResponse } from "next/server";
 import * as z from "zod";
 import { websockets } from "@/server/websockets";
+import { logger } from "@/lib/logger";
 
 const Payload = z.object({
     user: z.string(),
@@ -19,12 +20,12 @@ export async function POST(req: Request) {
     } catch (e) {
         if (e instanceof SyntaxError) return NextResponse.json({ ok: false, error: "Parsing JSON failed" }, { status: 400 })
         if (e instanceof z.ZodError) return NextResponse.json({ ok: false, error: "Invalid data structure" }, { status: 400 })
-        console.warn(e)
+        logger.error(e)
         return NextResponse.json({ ok: false, error: "Internal error" }, { status: 500 });
     }
     const auth = req.headers.get("Authorization");
-    console.debug(auth);
-    console.debug(data);
+    logger.debug(auth);
+    logger.debug(data);
     if (auth == "Bearer " + process.env.POOL_TOKEN) {
         const config = await prisma.workernames.findFirst({
             where: {
@@ -71,24 +72,24 @@ export async function POST(req: Request) {
                         userWs.send(JSON.stringify({
                             "ready": true
                         }))
-                        console.log("sent")
+                        logger.info("sent")
                     } else {
-                        console.warn("User not connected")
+                        logger.warn("User not connected")
                     }
 
                 } catch (e) {
-                    console.warn(e)
+                    logger.error(e)
                 }
             } else {
-                console.warn("User not found")
+                logger.warn("User not found")
             }
         } else {
-            console.log("config not found")
+            logger.info("config not found")
             return NextResponse.json({ ok: false })
         }
         return NextResponse.json({ ok: true });
     } else {
-        console.warn("Auth failed");
+        logger.warn("Auth failed");
         return NextResponse.json({ ok: false, error: "Auth failed" });
     }
 }
