@@ -3,6 +3,7 @@ import { prisma } from "@/server/Prisma";
 import { userModel } from "../../../../generated/prisma/models/user";
 import { getMe } from "@/lib/auth";
 import { getServerCookieHeader } from "@/lib/auth.server";
+import { logger } from "@/lib/logger";
 
 export async function GET() {
     try {
@@ -17,7 +18,7 @@ export async function GET() {
 
         return NextResponse.json({ id: heatboardUser.id, address: heatboardUser.address });
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         return NextResponse.json({ ok: false }, { status: 500 });
     }
 }
@@ -35,7 +36,7 @@ export async function PATCH(req: Request) {
 
         return NextResponse.json({ ok: true });
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         return NextResponse.json({ ok: false }, { status: 500 });
     }
 }

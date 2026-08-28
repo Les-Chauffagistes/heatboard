@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import randint from "../../../../../lib/Random";
 import { getMe } from "@/lib/auth";
 import { getServerCookieHeader } from "@/lib/auth.server";
+import { logger } from "@/lib/logger";
 
 
 export const GET = async (_req: Request, { params }: { params: Promise<{ address: string, workername: string }> }) => {
@@ -24,7 +25,7 @@ export const GET = async (_req: Request, { params }: { params: Promise<{ address
     else return NextResponse.json({ exists: false }, { status: 200 });
 
   } catch (e) {
-    console.log(e);
+    logger.error(e);
     return NextResponse.json({ error: "upstream_failed" }, { status: 502 });
   } finally {
     clearTimeout(timeout);
