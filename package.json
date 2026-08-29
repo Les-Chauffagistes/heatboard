@@ -13,8 +13,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@chauffagistes/cmn": "^0.0.6",
-    "@les-chauffagistes/authentication-types": "^0.0.6",
+    "@chauffagistes/cmn": "^0.0.8",
     "@mui/x-charts": "^8.14.1",
     "@noble/curves": "^2.0.1",
     "@noble/hashes": "^2.0.1",
