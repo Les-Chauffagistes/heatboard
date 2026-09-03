@@ -105,6 +105,6 @@ métier (association d'un mineur), configuration, déploiement et conventions.
 
 ## Déploiement
 
-Image Docker multi-stage (`dockerfile`) : `build`, `migrator` (applique les migrations
-Prisma), `runner` (build standalone Next.js). Le CI/CD est décrit dans
-`.github/workflows/`. Détails : [`doc/deployment.md`](./doc/deployment.md).
+Image Docker multi-stage (`dockerfile`) : `build`, `runner` (build standalone Next.js,
+applique les migrations Prisma au démarrage avant de lancer le serveur). Le CI/CD est
+décrit dans `.github/workflows/`. Détails : [`doc/deployment.md`](./doc/deployment.md).

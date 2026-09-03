@@ -159,5 +159,5 @@ erDiagram
 - `config` est **isomorphe** : côté client il lit `window.__CONFIG__` (injecté au runtime),
   côté serveur `process.env`. Une nouvelle URL doit être ajoutée aux **deux** ainsi qu'à
   `docker-entrypoint.sh` et `src/types/global.d.ts`.
-- Les migrations Prisma tournent dans un **conteneur séparé** (`migrator`) ; l'app attend
-  un flag avant de démarrer (voir `deployment.md`).
+- Les migrations Prisma (`npx prisma migrate deploy`) tournent dans `docker-entrypoint.sh`
+  avant de démarrer le serveur (voir `deployment.md`).
