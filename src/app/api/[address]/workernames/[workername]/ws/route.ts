@@ -1,10 +1,17 @@
 import { type NextRequest } from 'next/server'
-import { NextResponse } from 'next/server';
 import { decrypt, websockets, resolveUser } from '@/server/websockets';
+import { logger } from '@/lib/logger';
 
-// app/api/ws/route.ts
+// Les requêtes d'upgrade WebSocket sont interceptées en amont par next-ws et
+// n'atteignent jamais ce handler. Un GET qui arrive ici signifie que les en-têtes
+// Upgrade / Connection ont été retirés en route (reverse proxy, CDN) ou qu'un client
+// appelle l'URL en HTTP simple : on le signale explicitement plutôt que de laisser
+// remonter une erreur opaque.
 export const GET = () => {
-  return NextResponse.next();
+  return new Response('WebSocket upgrade required', {
+    status: 426,
+    headers: { Upgrade: 'websocket' },
+  });
 };
 
 // prévu plus tard
@@ -13,26 +20,26 @@ export async function UPGRADE(
   server: import('ws').WebSocketServer,
   request: NextRequest
 ) {
-  console.log('A client connected');
+  logger.info('A client connected');
   const url = new URL(request.url, "http://localhost");
   const token = url.searchParams.get("token");
 
   if (!token) {
-    console.warn("no token");
+    logger.warn("no token");
     client.close();
     return;
   }
 
   const user = await resolveUser(decrypt(token));
   if (!user) {
-    console.warn("no user");
+    logger.warn("no user");
     client.close();
     return;
   }
 
   websockets.set(user.id.toString(), client);
   client.on('close', () => {
-    console.log('A client disconnected');
+    logger.info('A client disconnected');
     websockets.delete(user.id.toString());
   });
 

@@ -1,5 +1,5 @@
 import { config } from "@/lib/config";
-import { components } from "@les-chauffagistes/authentication-types"
+import { components } from "@chauffagistes/cmn"
 
 async function authFetch(input: RequestInfo, init?: RequestInit, cookieHeader?: string) {
     const headers = cookieHeader ? { ...init?.headers, cookie: cookieHeader } : init?.headers;

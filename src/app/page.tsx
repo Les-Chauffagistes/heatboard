@@ -89,7 +89,7 @@ export default function Home() {
             marginBottom: "0.1rem"
           }}>Ce n&apos;est pas ce que vous cherchiez ?</p>
           <p >Rendez-vous sur la page d&apos;accueil de la pool</p>
-          <Link href="https://chauffagistes-pool.fr">
+          <Link href="https://chauffagistes-btc.fr">
             <div style={{
               borderTopLeftRadius: 50,
               borderBottomLeftRadius: 50,

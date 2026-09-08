@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { env } from "@/server/env";
+import { logger } from "@/lib/logger";
 
 export const GET = async(_req: Request, { params }: { params: Promise<{ address: string }> }) => {
   const controller = new AbortController();
@@ -18,7 +19,7 @@ export const GET = async(_req: Request, { params }: { params: Promise<{ address:
     if (upstream.status === 404) return NextResponse.json({ exists: false }, { status: 200 });
     else if (upstream.status === 200) return NextResponse.json({ exists: true }, { status: 200 });
   } catch (e) {
-    console.log(e);
+    logger.error(e);
     return NextResponse.json({ error: "upstream_failed" }, { status: 502 });
   } finally {
     clearTimeout(timeout);
