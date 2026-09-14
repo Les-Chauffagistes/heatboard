@@ -5,23 +5,22 @@ import { useEffect, useMemo, useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
 import { CircleStar, Flame, SatelliteDish } from "lucide-react";
-import { getPoolHistory, getPoolStats, getPoolWeight } from "@/app/api";
 import { useTheme } from "@/app/hooks/useTheme";
+import {components, HistoryAPIClient, PoolAPIClient} from "@chauffagistes/cmn"
 
 import HashrateChart from "./components/HashrateChart";
 import CombinedWidgetCard from "./components/CombinedWidgetCard";
 import ResponsivePieContainer from "./components/ResponsivePieContainer";
 import StatsWidgetBar from "../../components/StatsWidgetBar";
 
-import { Weights } from "../../../../../models/API Payloads/Weights";
-import { UserInstantStats } from "../../../../../models/API Payloads/Stats";
-import { PoolHistoryRecord } from "../../../../../models/API Payloads/PoolHistoryRecord";
+
 
 import UnitConverter from "../../../../lib/UnitConverter";
 
 import "./styles.css";
 
 import { COMMUNITY_POOL_ADDRESS } from "@/app/constants/columns";
+import {config} from "@/lib/config";
 
 export default function Welcome() {
     const path = usePathname();
@@ -30,12 +29,14 @@ export default function Welcome() {
     const { isDark } = useTheme();
     const theme = useMemo(() => createTheme({ palette: { mode: isDark ? "dark" : "light" } }), [isDark]);
 
-    const [poolStatsHistory, setPoolStatsHistory] = useState<PoolHistoryRecord[] | null>(null);
-    const [poolStats, setPoolStats] = useState<UserInstantStats | null>(null);
-    const [weights, setWeights] = useState<Weights[]>([]);
+    const [poolStatsHistory, setPoolStatsHistory] = useState<components["schemas"]["PoolStatsHistory"][] | null>(null);
+    const [poolStats, setPoolStats] = useState<components["schemas"]["PoolStats"] | null>(null);
+    const [weights, setWeights] = useState<components["schemas"]["WorkersWeights"][]>([]);
 
     const isLargeScreen = useMediaQuery("(min-width: 800px)");
     const isCommunityPool = userAddress === COMMUNITY_POOL_ADDRESS;
+
+    const poolAPIClient = new PoolAPIClient(config.API_URL)
 
 
     useEffect(() => {
@@ -45,10 +46,11 @@ export default function Welcome() {
 
         const fetchData = async () => {
             try {
+                const historyAPIClient = new HistoryAPIClient(config.HISTORY_API_URL)
                 const [history, weights, stats] = await Promise.all([
-                    getPoolHistory(userAddress),
-                    getPoolWeight(userAddress),
-                    getPoolStats(userAddress),
+                    historyAPIClient.getPoolStatsHistory(userAddress),
+                    historyAPIClient.getPoolWeight(userAddress),
+                    poolAPIClient.getPoolStats(userAddress),
                 ]);
 
                 if (abortController.signal.aborted) return;
@@ -66,7 +68,7 @@ export default function Welcome() {
         fetchData();
 
         return () => abortController.abort();
-    }, [userAddress]);
+    }, [poolAPIClient, userAddress]);
 
     if (poolStatsHistory === null || poolStats === null || weights === null) {
         return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Préchauffage...</div>;

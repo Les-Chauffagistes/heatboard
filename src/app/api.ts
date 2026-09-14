@@ -1,66 +1,6 @@
-import { UserInstantStats } from "../../models/API Payloads/Stats";
-import { PoolHistoryRecord } from "../../models/API Payloads/PoolHistoryRecord";
-import { WorkerHistoryRecord } from "../../models/API Payloads/WorkerHistoryRecord";
-import { BitcoinPrice } from "../../models/API Payloads/BitcoinPrice";
 import { WorkerLinkCode } from "../../models/API Payloads/WorkerLinkCode";
 import { LinkedWorkers } from "../../models/API Payloads/LinkedWorkers";
-import { config } from "@/lib/config";
 
-/**
- * Statistiques instantanées d'un User
- * @param address Adresse sur laquelle effectuer la recherche
- * @returns Détails généraux du user et de tous les workers
- */
-export async function getPoolStats(address: string): Promise<UserInstantStats> {
-    return await fetch(`${config.API_URL}/api/stats/${address}`).then((res) => res.json());
-}
-
-/**
- * Historique des statistiques d'un unique worker au sein d'un User
- * @param userAddress Adresse sur laquelle effectuer la recherche
- * @param workerName Nom du worker
- * @param period 30d ou forever. 
- * - Si 30d: 1 point toutes les 30 mins via hypertable
- * - Si forever: 1 point tous les jours via hypertable
- * @returns WorkerHistoryRecord[]
- */
-export async function getWorkerStatsHistory(userAddress: string, workerName: string, period: "daily" | "forever"): Promise<WorkerHistoryRecord[]> {
-    return await fetch(`${config.HISTORY_API_URL}/v1/${userAddress}/worker/${workerName}/${period}`).then((res) => res.json());
-}
-
-/**
- * Historique sur 30j du hashrate 1h, du hashrate 24h et du poids du pool
- * @param userAddress Adresse sur laquelle effectuer la recherche
- * @returns PoolHistoryRecord[]
- */
-export async function getPoolHistory(userAddress: string): Promise<PoolHistoryRecord[]> {
-    return await fetch(`${config.HISTORY_API_URL}/v1/${userAddress}/pool`).then((res) => res.json());
-}
-
-/**
- * Poids des workers
- * @param userAddress Adresse sur laquelle effectuer la recherche 
- * @returns 
- */
-export async function getPoolWeight(userAddress: string) {
-    return await fetch(`${config.HISTORY_API_URL}/v1/${userAddress}/weights`).then((res) => res.json());
-}
-
-/**
- * Prix du Bitcoin
- * @returns BitcoinPrice
- */
-export async function getBtcPrice(): Promise<BitcoinPrice> {
-    return await fetch(`${config.BITCOIN_API_URL}/v1/bitcoin-price`).then((res) => res.json());
-}
-
-/**
- * Récompense de block du réseau Bitcoin
- * @returns number
- */
-export async function getBtcBlockReward(): Promise<number> {
-    return await fetch(`${config.BITCOIN_API_URL}/v1/bitcoin-block-reward`).then((res) => res.json());
-}
 
 /**
  * Vérifie si une adresse est utilisée chez les Chauffagistes.

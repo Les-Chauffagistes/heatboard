@@ -1,12 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { REQUEST_ID_HEADER, resolveCorrelationId, runWithCorrelationId } from "@chauffagistes/cmn";
+import { extractTraceContext, withTraceContext } from "@chauffagistes/cmn/tracing";
 import { logger } from "@/lib/logger";
 
 // Le middleware Next.js s'exécute avant le handler et ne voit jamais la
 // réponse : pas de statut/durée possible ici (contrairement à
 // withRequestLogging, applicable route par route). Ce middleware se limite
-// donc à un log d'accès "requête reçue" + à la propagation de l'id de
-// corrélation vers le handler et vers le client.
+// donc à un log d'accès "requête reçue", dans le contexte de trace
+// (`traceparent`) porté par la requête entrante.
 // process.stdout (utilisé par le logger) n'existe pas sur l'Edge runtime — export
 // séparé, PAS une clé de `config` (le schéma de `config` est strict et n'accepte
 // que matcher/regions/unstable_allowDynamic ; y mettre `runtime` est ignoré en
@@ -18,19 +18,14 @@ export const config = {
 };
 
 export function middleware(request: NextRequest) {
-  const correlationId = resolveCorrelationId(request.headers);
+  const ctx = extractTraceContext(request.headers);
 
-  return runWithCorrelationId(correlationId, () => {
+  return withTraceContext(ctx, () => {
     logger.info("requête reçue", {
       method: request.method,
       path: request.nextUrl.pathname,
     });
 
-    const forwardedHeaders = new Headers(request.headers);
-    forwardedHeaders.set(REQUEST_ID_HEADER, correlationId);
-
-    const response = NextResponse.next({ request: { headers: forwardedHeaders } });
-    response.headers.set(REQUEST_ID_HEADER, correlationId);
-    return response;
+    return NextResponse.next();
   });
 }
