@@ -2,6 +2,7 @@
 
 import type { Metadata } from "next";
 import "./globals.css";
+import "@chauffagistes/cmn/ui/footer.css";
 
 export const metadata: Metadata = {
   title: {

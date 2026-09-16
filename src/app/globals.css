@@ -19,6 +19,13 @@
   --mobile-navbar-background-color: var(--browser-orange);
   --mobile-navbar-active-color: #ffffff;
 
+  /* Alias du contrat de theming des composants partagés @chauffagistes/cmn/ui
+     (Navbar/Footer), même noms que pool-site/auth-service-front globals.css. */
+  --text-main: var(--foreground);
+  --text-muted: #5c5c66;
+  --bg-alt: var(--background-alt);
+  --border-color: var(--card-outline-color);
+
   /* Tokens theme-invariants pour la landing page (src/app/components/landing) */
   --radius: 16px;
   --max-width: 1100px;
@@ -42,6 +49,10 @@
     --mobile-navbar-active-color: var(--orange);
     --mobile-navbar-background-color: #1c1c22;
     --footer-background-color: #16161a;
+    --text-main: var(--foreground);
+    --text-muted: #a3a3ad;
+    --bg-alt: var(--background-alt);
+    --border-color: var(--card-outline-color);
   }
 }
 
@@ -64,6 +75,10 @@ html[data-theme="dark"] {
   --mobile-navbar-active-color: var(--orange);
   --mobile-navbar-background-color: #1c1c22;
   --footer-background-color: #16161a;
+  --text-main: var(--foreground);
+  --text-muted: #a3a3ad;
+  --bg-alt: var(--background-alt);
+  --border-color: var(--card-outline-color);
   color-scheme: dark;
 }
 
@@ -87,6 +102,10 @@ html[data-theme="light"] {
   --desktop-navbar-active-text-color: white;
   --mobile-navbar-background-color: var(--browser-orange);
   --mobile-navbar-active-color: #ffffff;
+  --text-main: var(--foreground);
+  --text-muted: #5c5c66;
+  --bg-alt: var(--background-alt);
+  --border-color: var(--card-outline-color);
   color-scheme: light;
 }
 

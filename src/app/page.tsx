@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import ThemeBody from "./ThemeBody";
+import Navbar from "./components/landing/Navbar";
+import Footer from "./components/landing/Footer";
 import Hero from "./components/landing/Hero";
 import ComponentShowcase from "./components/landing/ComponentShowcase";
 import FeaturesGrid from "./components/landing/FeaturesGrid";
@@ -24,6 +26,7 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <ThemeBody className={styles.landing}>
+      <Navbar />
       <main>
         <Hero />
         <FeaturesGrid />
@@ -33,6 +36,7 @@ export default function Home() {
         <HowItWorks />
         <PoolPromoCard />
       </main>
+      <Footer />
     </ThemeBody>
   );
 }
