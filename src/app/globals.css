@@ -17,6 +17,10 @@
   --desktop-navbar-active-text-color: white;
   --mobile-navbar-background-color: var(--browser-orange);
   --mobile-navbar-active-color: #ffffff;
+
+  /* Tokens theme-invariants pour la landing page (src/app/components/landing) */
+  --radius: 16px;
+  --max-width: 1100px;
 }
 
 @media (prefers-color-scheme: dark) {
