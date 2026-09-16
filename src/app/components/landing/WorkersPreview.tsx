@@ -3,7 +3,7 @@ import styles from "./landing.module.css";
 
 export default function WorkersPreview() {
     return (
-        <section style={{ background: "var(--card-background-color)" }}>
+        <section style={{ background: "var(--background-alt)" }}>
             <div className={styles.container} style={{
                 display: "flex",
                 flexDirection: "column",

@@ -2,7 +2,7 @@ import styles from "./landing.module.css";
 
 export default function HowItWorks() {
     return (
-        <section style={{ background: "var(--card-background-color)" }}>
+        <section style={{ background: "var(--background-alt)" }}>
             <div className={styles.container}>
                 <h2>Comment ça marche</h2>
 
