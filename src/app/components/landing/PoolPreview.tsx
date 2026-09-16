@@ -1,4 +1,5 @@
-import Image from "next/image";
+import { PieChart, TrendingUp } from "lucide-react";
+import ScreenshotFrame from "./ScreenshotFrame";
 import styles from "./landing.module.css";
 
 export default function PoolPreview() {
@@ -18,15 +19,19 @@ export default function PoolPreview() {
                     </p>
                 </div>
 
-                <div className={styles.previewCard} style={{ width: "100%", maxWidth: 900, padding: 0, lineHeight: 0 }}>
-                    <Image
-                        src="/screenshots/pool-dashboard.png"
-                        alt="Vue d'ensemble de la pool Heatboard : hashrate, répartition des mineurs et évolution"
-                        width={1600}
-                        height={620}
-                        style={{ width: "100%", height: "auto", display: "block", borderRadius: "var(--radius)" }}
-                    />
-                </div>
+                <ScreenshotFrame
+                    srcLight="/screenshots/pool-light.png"
+                    srcDark="/screenshots/pool-dark.png"
+                    alt="Vue d'ensemble de la pool Heatboard : hashrate, répartition des mineurs et évolution"
+                    width={1600}
+                    height={620}
+                    address="heatboard.app/board/bc1q…/pool"
+                    tilt="right"
+                    chips={[
+                        { Icon: TrendingUp, value: "+12%", label: "hashrate sur 7j", position: "topRight" },
+                        { Icon: PieChart, value: "128", label: "mineurs connectés", position: "bottomLeft" },
+                    ]}
+                />
             </div>
         </section>
     );

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import ThemeBody from "./ThemeBody";
 import Hero from "./components/landing/Hero";
+import ComponentShowcase from "./components/landing/ComponentShowcase";
 import FeaturesGrid from "./components/landing/FeaturesGrid";
 import WorkersPreview from "./components/landing/WorkersPreview";
 import PoolPreview from "./components/landing/PoolPreview";
@@ -26,6 +27,7 @@ export default function Home() {
       <main>
         <Hero />
         <FeaturesGrid />
+        <ComponentShowcase />
         <WorkersPreview />
         <PoolPreview />
         <HowItWorks />

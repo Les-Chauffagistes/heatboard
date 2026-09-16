@@ -24,7 +24,7 @@ export default function PoolPromoCard() {
                         paddingRight: 20,
                         textAlign: "left",
                     }}>
-                        <Image src="/icon-round.png" alt="Les Chauffagistes" width={100} height={100} />
+                        <Image src="/round-icon.png" alt="Les Chauffagistes" width={100} height={100} />
                         <div>
                             <h2 style={{ marginBottom: "0.2rem", color: "var(--background)", fontSize: "1.2rem" }}>
                                 Présentation générale de la Pool

@@ -1,4 +1,5 @@
-import Image from "next/image";
+import { Cpu, Users } from "lucide-react";
+import ScreenshotFrame from "./ScreenshotFrame";
 import styles from "./landing.module.css";
 
 export default function WorkersPreview() {
@@ -18,15 +19,19 @@ export default function WorkersPreview() {
                     </p>
                 </div>
 
-                <div className={styles.previewCard} style={{ width: "100%", maxWidth: 900, padding: 0, lineHeight: 0 }}>
-                    <Image
-                        src="/screenshots/workers-table.png"
-                        alt="Tableau des workers Heatboard avec hashrate, shares et récompenses estimées"
-                        width={1600}
-                        height={620}
-                        style={{ width: "100%", height: "auto", display: "block", borderRadius: "var(--radius)" }}
-                    />
-                </div>
+                <ScreenshotFrame
+                    srcLight="/screenshots/workers-light.png"
+                    srcDark="/screenshots/workers-dark.png"
+                    alt="Tableau des workers Heatboard avec hashrate, shares et récompenses estimées"
+                    width={1600}
+                    height={620}
+                    address="heatboard.app/board/bc1q…/workers"
+                    tilt="left"
+                    chips={[
+                        { Icon: Cpu, value: "3.2 PH/s", label: "hashrate cumulé", position: "topLeft" },
+                        { Icon: Users, value: "6", label: "workers actifs", position: "bottomRight" },
+                    ]}
+                />
             </div>
         </section>
     );
