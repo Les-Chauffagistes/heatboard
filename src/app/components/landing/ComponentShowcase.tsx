@@ -38,17 +38,17 @@ const MOCK_WEIGHTS: Weights[] = [
 
 const MOCK_WORKER: CleanWorkerHashrate & { weight: number } = {
     workername: "bc1qexemple9d2f.rig-01",
-    hashrate1m: 92_000_000,
-    hashrate5m: 90_000_000,
-    hashrate1h: 88_000_000,
-    hashrate1d: 91_000_000,
-    hashrate7d: 89_000_000,
+    hashrate1m: 92_000_000_000_000,
+    hashrate5m: 90_000_000_000_000,
+    hashrate1h: 88_000_000_000_000,
+    hashrate1d: 91_000_000_000_000,
+    hashrate7d: 89_000_000_000_000,
     lastshare: "2026-09-16T10:00:00Z",
-    shares: 1_250_000,
-    bestshare: 60_000,
-    bestever: 610_000,
+    shares: 1_250_000_000,
+    bestshare: 60_000_000_000,
+    bestever: 610_000_000_000,
     weight: 18.5,
-    rewardBtc: 0.032,
+    rewardBtc: 3.125 * 0.185,
 };
 
 export default function ComponentShowcase() {

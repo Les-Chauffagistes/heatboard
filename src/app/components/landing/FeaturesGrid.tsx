@@ -47,7 +47,7 @@ export default function FeaturesGrid() {
             <div className={styles.container}>
                 <h2>Tout ce dont vous avez besoin pour suivre votre minage</h2>
                 <p style={{ marginTop: 12, maxWidth: 560, color: "var(--secondary-white-text-color)" }}>
-                    Heatboard fonctionne avec n&apos;importe quelle pool compatible
+                    Heatboard fonctionne avec n&apos;importe quelle pool
                     Chauffagistes, pas seulement la pool communautaire.
                 </p>
 

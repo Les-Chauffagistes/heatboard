@@ -28,7 +28,7 @@ export default function WorkersPreview() {
                     address="heatboard.app/board/bc1q…/workers"
                     tilt="left"
                     chips={[
-                        { Icon: Cpu, value: "3.2 PH/s", label: "hashrate cumulé", position: "topLeft" },
+                        { Icon: Cpu, value: "487 TH/s", label: "hashrate cumulé", position: "topLeft" },
                         { Icon: Users, value: "6", label: "workers actifs", position: "bottomRight" },
                     ]}
                 />
