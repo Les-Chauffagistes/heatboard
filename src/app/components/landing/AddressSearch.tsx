@@ -37,7 +37,7 @@ export default function AddressSearch() {
             }} type="text" autoFocus={true} capture={"environment"} placeholder="Adresse Bitcoin"
                 onChange={(e) => setSearch(e.target.value)} ref={inputRef} value={search}
                 onKeyDown={(e) => { if (e.key === "Enter") searchHandler(); }} />
-            <button className="secondary" onClick={searchHandler} style={{ color: "var(--orange)", fontWeight: 600 }}>
+            <button className="secondary" onClick={searchHandler}>
                 Rechercher
             </button>
         </div>
