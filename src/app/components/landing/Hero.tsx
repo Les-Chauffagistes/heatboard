@@ -11,7 +11,7 @@ export default function Hero() {
             backgroundColor="#141414"
             blob1Color="var(--orange)"
             blob2Color="var(--accent)"
-            blob3Color="var(--darker-orange)"
+            blob3Color="var(--accent)"
             noiseOpacity={35}
         >
             <section style={{ paddingTop: 110 }}>
@@ -52,7 +52,7 @@ export default function Hero() {
                         gap: 10,
                     }}>
                         <GoToCommunityPool />
-                        <GoToBEF />
+                        {/*<GoToBEF />*/}
                     </div>
                 </div>
             </section>

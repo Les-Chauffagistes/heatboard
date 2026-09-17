@@ -197,6 +197,11 @@ button.danger:hover {
   color: var(--background);
 }
 
+.super-card button.secondary {
+    backdrop-filter: blur(3px);
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
 .ag-header-cell-label {
   white-space: nowrap;
 }
