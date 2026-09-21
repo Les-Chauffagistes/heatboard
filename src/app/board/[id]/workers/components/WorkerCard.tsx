@@ -77,7 +77,7 @@ export default function WorkerCard({ worker, btcPrice, isCommunityPool }: { work
         }}>
             <div style={{
                 margin: "10px",
-                color: "--var(foreground)",
+                color: "var(--foreground)",
                 overflow: "hidden"
             }}>
                 <h3>{ExtractWorkername.fromPool(worker.workername) ?? "Worker sans nom"}</h3>
