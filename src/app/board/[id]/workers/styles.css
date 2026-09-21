@@ -7,3 +7,10 @@
         flex-direction: column;
     }
 }
+
+/* Colonnes numériques du tableau (hashrate, shares, poids, récompense) —
+   même paire de polices que le reste de l'app : Archivo pour les mots
+   (colonne "Nom", en-têtes), IBM Plex Mono pour les valeurs chiffrées. */
+.cell-mono {
+    font-family: var(--font-mono), monospace;
+}

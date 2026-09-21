@@ -1,10 +1,11 @@
 "use client";
 
 import { useMemo } from "react";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import { Computer } from "lucide-react";
 
 import { useTheme } from "@/app/hooks/useTheme";
+import { createAppTheme } from "@/lib/muiTheme";
 import HashrateChart from "@/app/board/[id]/pool/components/HashrateChart";
 import ResponsivePieContainer from "@/app/board/[id]/pool/components/ResponsivePieContainer";
 import WidgetCard from "@/app/board/components/WidgetCard";
@@ -53,7 +54,7 @@ const MOCK_WORKER: CleanWorkerHashrate & { weight: number } = {
 
 export default function ComponentShowcase() {
     const { isDark } = useTheme();
-    const muiTheme = useMemo(() => createTheme({ palette: { mode: isDark ? "dark" : "light" } }), [isDark]);
+    const muiTheme = useMemo(() => createAppTheme(isDark), [isDark]);
 
     return (
         <section style={{ background: "var(--background-alt)", paddingTop: 80, paddingBottom: 120 }}>

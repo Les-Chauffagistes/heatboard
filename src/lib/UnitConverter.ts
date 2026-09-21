@@ -2,8 +2,13 @@ import formatNumber from "./NumberFormatter";
 
 export default class UnitConverter {
     static fromStringToNumber(value: string): number {
-        const unit = value.slice(-1).toUpperCase();
-        const number = Number.parseFloat(value);
+        // Certains endpoints (ex. l'historique par worker) renvoient la valeur
+        // suffixée de l'unité complète ("58.23TH/s"), pas seulement de la lettre
+        // d'échelle ("58.23T") : on détache "H/s" avant de lire la lettre, pour
+        // que les deux formats soient interprétés de la même façon.
+        const withoutUnit = value.replace(/H\/s$/i, "");
+        const unit = withoutUnit.slice(-1).toUpperCase();
+        const number = Number.parseFloat(withoutUnit);
         if (Number.isNaN(number)) throw new Error("Invalid number");
 
         switch (unit) {
@@ -16,6 +21,21 @@ export default class UnitConverter {
             default: return number;
         }
     };
+
+    // Retourne uniquement le préfixe d'échelle (K/M/G/T/P/E, ou "" en dessous de
+    // 1000) qu'utiliserait `fromNumberToString` pour cette valeur — utile pour
+    // annoncer l'unité réelle d'une série (ex. "Hashrate (TH/s)") sans dupliquer
+    // la logique de seuils à chaque appelant.
+    static unitPrefix(value: number): string {
+        const absValue = Math.abs(value);
+        if (absValue < 1e3) return "";
+        if (absValue < 1e6) return "K";
+        if (absValue < 1e9) return "M";
+        if (absValue < 1e12) return "G";
+        if (absValue < 1e15) return "T";
+        if (absValue < 1e18) return "P";
+        return "E";
+    }
 
     static fromNumberToString(value: number, significantDigits: number = 3): string {
         // Gestion des cas spéciaux

@@ -3,36 +3,44 @@ import { Settings, Download } from "lucide-react";
 import "./toolbar.css"; // styles séparés
 
 type ToolbarProps = {
-  options: { id: string; label: string; checked: boolean; onChange: (v: boolean) => void }[];
+  // Optionnel : n'a de sens que là où une grille de colonnes existe réellement
+  // à piloter (vue desktop). Omis (ou vide), le panneau de cases à cocher n'est
+  // pas rendu — inutile d'afficher un réglage qui n'a aucun effet visible.
+  options?: { id: string; label: string; checked: boolean; onChange: (v: boolean) => void }[];
   onExportCsv?: () => void;
 };
 
-export function Toolbar({ options, onExportCsv }: ToolbarProps) {
+export function Toolbar({ options, onExportCsv }: Readonly<ToolbarProps>) {
   const [open, setOpen] = useState(false);
+  const hasColumnOptions = !!options && options.length > 0;
 
   return (
     <div className="toolbar-container">
-      <button
-        className="toolbar-toggle"
-        onClick={() => setOpen((prev) => !prev)}
-        aria-label="Afficher les options"
-      >
-        <Settings />
-      </button>
+      {hasColumnOptions && (
+        <>
+          <button
+            className="toolbar-toggle"
+            onClick={() => setOpen((prev) => !prev)}
+            aria-label="Afficher les options"
+          >
+            <Settings />
+          </button>
 
-      <div className={`toolbar-panel ${open ? "open" : ""}`}>
-        <p>Hashrate: </p>
-        {options.map((opt) => (
-          <label key={opt.id} className="toolbar-option">
-            <input
-              type="checkbox"
-              checked={opt.checked}
-              onChange={(e) => opt.onChange(e.target.checked)}
-            />
-            {opt.label}
-          </label>
-        ))}
-      </div>
+          <div className={`toolbar-panel ${open ? "open" : ""}`}>
+            <p>Hashrate: </p>
+            {options.map((opt) => (
+              <label key={opt.id} className="toolbar-option">
+                <input
+                  type="checkbox"
+                  checked={opt.checked}
+                  onChange={(e) => opt.onChange(e.target.checked)}
+                />
+                {opt.label}
+              </label>
+            ))}
+          </div>
+        </>
+      )}
 
       {onExportCsv && (
         <button
