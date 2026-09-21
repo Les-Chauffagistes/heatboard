@@ -14,6 +14,29 @@ import WorkerPannel from './WorkerPannel';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
+// Aligne le thème ag-Grid (par défaut gris neutre) sur la palette de l'app :
+// les valeurs sont des `var(--...)`, donc suivent automatiquement le thème
+// clair/sombre et la teinte de fond retenue dans globals.css.
+const gridThemeParams = {
+    backgroundColor: "var(--background)",
+    foregroundColor: "var(--foreground)",
+    textColor: "var(--foreground)",
+    chromeBackgroundColor: "var(--card-background-color)",
+    headerBackgroundColor: "var(--card-background-color)",
+    headerTextColor: "var(--foreground)",
+    oddRowBackgroundColor: "var(--background-alt)",
+    borderColor: "var(--card-outline-color)",
+    accentColor: "var(--orange)",
+    // Sans ça, ag-grid retombe sur sa propre police par défaut (pas Archivo) —
+    // les colonnes numériques passent en mono via `cellClass: "cell-mono"`
+    // sur chaque colonne concernée (cf. plus bas), même logique que les charts.
+    fontFamily: "var(--font-archivo), Arial, Helvetica, sans-serif",
+};
+
+// Classe appliquée aux colonnes numériques (hashrate, shares, poids,
+// récompense) pour les afficher en IBM Plex Mono — "Nom" reste en Archivo.
+const NUMERIC_CELL_CLASS = "cell-mono";
+
 
 /**
  * Ligne "détail" injectée juste après la ligne sélectionnée. Elle est rendue en
@@ -85,7 +108,7 @@ export const MainGrid = forwardRef<AgGridReact<CleanWorkerHashrate>, {
 
     const { isDark } = useTheme();
     const [myTheme, setMyTheme] = useState(() =>
-        themeQuartz.withPart(colorSchemeLight) // valeur par défaut (SSR)
+        themeQuartz.withPart(colorSchemeLight).withParams(gridThemeParams) // valeur par défaut (SSR)
     );
 
     // Nom du mineur dont le graphique est actuellement déplié sous sa ligne.
@@ -94,7 +117,9 @@ export const MainGrid = forwardRef<AgGridReact<CleanWorkerHashrate>, {
     const pendingScrollRef = useRef<string | null>(null);
 
     useEffect(() => {
-        setMyTheme(themeQuartz.withPart(isDark ? colorSchemeDark : colorSchemeLight));
+        setMyTheme(
+            themeQuartz.withPart(isDark ? colorSchemeDark : colorSchemeLight).withParams(gridThemeParams)
+        );
     }, [isDark]);
 
     const minHashrateWidth = 130;
@@ -121,6 +146,7 @@ export const MainGrid = forwardRef<AgGridReact<CleanWorkerHashrate>, {
                 headerName: "Hashrate (1m)",
                 field: "hashrate1m",
                 colId: "hashrate1m",
+                cellClass: NUMERIC_CELL_CLASS,
                 filter: false,
                 valueFormatter: (params: ValueFormatterParams) => {
                     if (!params.value) return noData;
@@ -135,6 +161,7 @@ export const MainGrid = forwardRef<AgGridReact<CleanWorkerHashrate>, {
                 headerName: "Hashrate (5m)",
                 field: "hashrate5m",
                 colId: "hashrate5m",
+                cellClass: NUMERIC_CELL_CLASS,
                 filter: false,
                 valueFormatter: (params: ValueFormatterParams) => {
                     if (!params.value) return noData;
@@ -147,6 +174,7 @@ export const MainGrid = forwardRef<AgGridReact<CleanWorkerHashrate>, {
                 headerName: "Hashrate (1h)",
                 field: "hashrate1h",
                 colId: "hashrate1h",
+                cellClass: NUMERIC_CELL_CLASS,
                 filter: false,
                 valueFormatter: (params: ValueFormatterParams) => {
                     if (!params.value) return noData;
@@ -160,6 +188,7 @@ export const MainGrid = forwardRef<AgGridReact<CleanWorkerHashrate>, {
                 headerName: "Hashrate (1d)",
                 field: "hashrate1d",
                 colId: "hashrate1d",
+                cellClass: NUMERIC_CELL_CLASS,
                 filter: false,
                 valueFormatter: (params: ValueFormatterParams) => {
                     if (!params.value) return noData;
@@ -174,6 +203,7 @@ export const MainGrid = forwardRef<AgGridReact<CleanWorkerHashrate>, {
                 headerName: "Hashrate (7d)",
                 field: "hashrate7d",
                 colId: "hashrate7d",
+                cellClass: NUMERIC_CELL_CLASS,
                 filter: false,
                 valueFormatter: (params: ValueFormatterParams) => {
                     if (!params.value) return noData;
@@ -187,6 +217,7 @@ export const MainGrid = forwardRef<AgGridReact<CleanWorkerHashrate>, {
                 headerName: "Shares",
                 field: "shares",
                 colId: "shares",
+                cellClass: NUMERIC_CELL_CLASS,
                 filter: false,
                 valueFormatter: (params: ValueFormatterParams) => {
                     if (!params.value) return noData;
@@ -197,6 +228,7 @@ export const MainGrid = forwardRef<AgGridReact<CleanWorkerHashrate>, {
                 headerName: "Best Share",
                 field: "bestshare",
                 colId: "bestshare",
+                cellClass: NUMERIC_CELL_CLASS,
                 filter: false,
                 minWidth: 110,
                 valueFormatter: (params: ValueFormatterParams) => {
@@ -208,6 +240,7 @@ export const MainGrid = forwardRef<AgGridReact<CleanWorkerHashrate>, {
                 headerName: "Poids",
                 colId: "avg_weight",
                 field: "weight",
+                cellClass: NUMERIC_CELL_CLASS,
                 filter: false,
                 sortable: true,
                 valueFormatter: (params: ValueFormatterParams) => {
@@ -222,6 +255,7 @@ export const MainGrid = forwardRef<AgGridReact<CleanWorkerHashrate>, {
                     headerName: "Récompense",
                     field: "rewardBtc",
                     colId: "rewardBtc",
+                    cellClass: NUMERIC_CELL_CLASS,
                     valueFormatter: (params: ValueFormatterParams) => {
                         if (!params.value) return noData;
                         const btcPart = formatNumber(params.value.toFixed(3)) + " ₿";

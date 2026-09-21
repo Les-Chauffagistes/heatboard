@@ -2,17 +2,17 @@
 
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
-import { Computer, Search, User } from "lucide-react";
+import { Download, Search } from "lucide-react";
 import { AgGridReact } from "ag-grid-react";
 
 import { getBtcBlockReward, getBtcPrice, getPoolWeight, getPoolStats } from "@/app/api";
+import { createAppTheme } from "@/lib/muiTheme";
 import { useTheme } from "@/app/hooks/useTheme";
 import { useHideOnScroll } from "@/app/hooks/useHideOnScroll";
 import { setMobileNavInputFocused, setMobileNavScrolledDown } from "@/app/hooks/useMobileNavVisibility";
 
-import StatsWidgetBar from "../../components/StatsWidgetBar";
 import { MainGrid } from "./components/Table";
 import { Toolbar } from "./components/Toolbar"
 import WorkerList from "./components/WorkerList";
@@ -35,6 +35,31 @@ const INITIAL_VISIBLE_COLUMNS = new Set(HASHRATE_COLUMNS);
 
 type VisibleColumns = HashrateColumn;
 
+// Échappe une valeur pour un champ CSV (RFC 4180) : entoure de guillemets si la
+// valeur contient un séparateur, un guillemet ou un saut de ligne.
+function csvEscape(value: string | number): string {
+    const str = String(value);
+    if (/[",\n;]/.test(str)) return `"${str.replace(/"/g, '""')}"`;
+    return str;
+}
+
+// Déclenche le téléchargement d'un CSV côté client, sans dépendre d'une lib de
+// grille : marche aussi bien sur la vue mobile (cartes) que sur la vue desktop
+// (ag-grid), qui n'expose pas forcément une instance de grille montée.
+// Le BOM UTF-8 assure un affichage correct des accents ("Récompense") dans Excel FR.
+function downloadCsv(filename: string, rows: (string | number)[][]) {
+    const csv = rows.map(row => row.map(csvEscape).join(",")).join("\r\n");
+    const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
 export default function Home() {
     const [userStats, setUserStats] = useState<UserInstantStats | null>(null);
     const [weights, setWeights] = useState<Weights[]>([]);
@@ -51,7 +76,7 @@ export default function Home() {
     const isCommunityPool = userAddress === COMMUNITY_POOL_ADDRESS;
 
     const { isDark } = useTheme();
-    const theme = useMemo(() => createTheme({ palette: { mode: isDark ? "dark" : "light" } }), [isDark]);
+    const theme = useMemo(() => createAppTheme(isDark), [isDark]);
 
     const activeColumnsRef = useRef<string[]>([]);
     const gridRef = useRef<AgGridReact<CleanWorkerHashrate>>(null);
@@ -172,31 +197,40 @@ export default function Home() {
 
     function handleExportCsv() {
         const date = new Date().toISOString().slice(0, 10);
-        // Colonnes numériques : on exporte la valeur brute (déjà convertie en H/s, %, ou BTC
-        // dans `data`) plutôt que la chaîne formatée avec unité, sinon impossible de faire
-        // des calculs dans un tableur.
-        const numericColIds = new Set([
-            "hashrate1m", "hashrate5m", "hashrate1h", "hashrate1d", "hashrate7d",
-            "shares", "bestshare", "avg_weight", "rewardBtc"
-        ]);
-        const headerUnits: Record<string, string> = {
-            hashrate1m: "H/s", hashrate5m: "H/s", hashrate1h: "H/s", hashrate1d: "H/s", hashrate7d: "H/s",
-            avg_weight: "%", rewardBtc: "BTC"
-        };
-        gridRef.current?.api.exportDataAsCsv({
-            fileName: `chauffagistes-workers-${date}.csv`,
-            processCellCallback: (params) => {
-                const colId = params.column.getColId();
-                if (colId === "workername") return params.value?.split(".")[1] ?? params.value ?? "";
-                if (numericColIds.has(colId)) return params.value ?? "";
-                return params.value ?? "";
-            },
-            processHeaderCallback: (params) => {
-                const headerName = params.column.getColDef().headerName ?? params.column.getColId();
-                const unit = headerUnits[params.column.getColId()];
-                return unit ? `${headerName} (${unit})` : headerName;
-            },
+
+        // Liste ordonnée des colonnes hashrate à inclure, filtrée sur celles
+        // actuellement visibles (même logique que les colonnes de MainGrid).
+        const allHashrateColumns: { header: string; field: keyof CleanWorkerHashrate; visible: boolean }[] = [
+            { header: "Hashrate (1m) (H/s)", field: "hashrate1m", visible: isHashrate1mVisible },
+            { header: "Hashrate (5m) (H/s)", field: "hashrate5m", visible: isHashrate5mVisible },
+            { header: "Hashrate (1h) (H/s)", field: "hashrate1h", visible: isHashrate1hrVisible },
+            { header: "Hashrate (1d) (H/s)", field: "hashrate1d", visible: isHashrate1dVisible },
+            { header: "Hashrate (7d) (H/s)", field: "hashrate7d", visible: isHashrate7dVisible },
+        ];
+        const hashrateColumns = allHashrateColumns.filter(col => col.visible);
+
+        const headers: string[] = [
+            "Nom",
+            ...hashrateColumns.map(col => col.header),
+            "Shares",
+            "Best Share",
+            "Poids (%)",
+        ];
+        if (isCommunityPool) headers.push("Récompense (BTC)");
+
+        const rows: (string | number)[][] = data.map(worker => {
+            const row: (string | number)[] = [
+                ExtractWorkername.fromPool(worker.workername) ?? worker.workername,
+                ...hashrateColumns.map(col => worker[col.field] as number ?? ""),
+                worker.shares ?? "",
+                worker.bestshare ?? "",
+                worker.weight ?? "",
+            ];
+            if (isCommunityPool) row.push(worker.rewardBtc ?? "");
+            return row;
         });
+
+        downloadCsv(`chauffagistes-workers-${date}.csv`, [headers, ...rows]);
     }
 
     const options = [
@@ -252,20 +286,11 @@ export default function Home() {
                 {isLargeScreen ?
                     <>
                         <div style={{
-                            margin: "20px 10px"
+                            margin: "20px 10px 8px",
+                            fontSize: "0.85rem",
+                            color: "var(--secondary-white-text-color)",
                         }}>
-                            <StatsWidgetBar data={[
-                                {
-                                    "title": "Personnes",
-                                    "value": data.length,
-                                    "icon": User
-                                },
-                                {
-                                    "title": "Machines",
-                                    "value": userStats.globalStats.workers,
-                                    "icon": Computer
-                                }
-                            ]} />
+                            {data.length} personne{data.length > 1 ? "s" : ""} · {userStats.globalStats.workers} machine{userStats.globalStats.workers > 1 ? "s" : ""}
                         </div>
                         <div style={{
                             display: "flex"
@@ -290,31 +315,18 @@ export default function Home() {
                         paddingBottom: "var(--mobile-navbar-height, 64px)",
                     }}>
                         <div style={{
-                            display: "flex",
-                            margin: "10px 0",
-                            flexWrap: "wrap",
+                            margin: "10px 0 6px",
+                            fontSize: "0.8rem",
+                            color: "var(--secondary-white-text-color)",
                         }}>
-                            <StatsWidgetBar data={[
-                                {
-                                    "title": "Personnes",
-                                    "value": data.length,
-                                    "icon": User
-                                },
-                                {
-                                    "title": "Machines",
-                                    "value": userStats.globalStats.workers,
-                                    "icon": Computer
-                                }
-                            ]} />
+                            {data.length} personne{data.length > 1 ? "s" : ""} · {userStats.globalStats.workers} machine{userStats.globalStats.workers > 1 ? "s" : ""}
                         </div>
+
                         <div style={{
                             display: "flex",
-                            justifyContent: "right",
                             alignItems: "stretch",
-                            flex: 1,
-                            marginTop: 10,
+                            gap: 10,
                             marginBottom: 10,
-                            gap: 10
                         }}>
                             <div style={{position: "relative", flex: 1, display: "flex", alignItems: "center"}}>
                                 <Search style={{position: "absolute", left: 7}} size={18}/>
@@ -348,6 +360,23 @@ export default function Home() {
                                 </optgroup>
                                 <option value="weight"> Poids</option>
                             </select>
+                            <button
+                                type="button"
+                                onClick={handleExportCsv}
+                                aria-label="Exporter les statistiques au format CSV"
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    padding: "0 12px",
+                                    border: "1px solid var(--card-outline-color)",
+                                    borderRadius: 10,
+                                    backgroundColor: "var(--card-background-color)",
+                                    color: "var(--foreground)",
+                                }}
+                            >
+                                <Download size={18} />
+                            </button>
                         </div>
 
                         <WorkerList workers={data} orderBy={orderBy} searchContent={searchText} userAddress={userAddress} btcPrice={bitcoinPrice} isCommunityPool={isCommunityPool} />
