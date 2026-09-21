@@ -56,7 +56,7 @@ export default function ComponentShowcase() {
     const muiTheme = useMemo(() => createTheme({ palette: { mode: isDark ? "dark" : "light" } }), [isDark]);
 
     return (
-        <section style={{ background: "var(--background)", paddingTop: 80, paddingBottom: 120 }}>
+        <section style={{ background: "var(--background-alt)", paddingTop: 80, paddingBottom: 120 }}>
             <div className={styles.container} style={{ textAlign: "center" }}>
                 <div className={styles.fadeUp} style={{ maxWidth: 560, margin: "0 auto" }}>
                     <h2>Des métriques pertinentes</h2>

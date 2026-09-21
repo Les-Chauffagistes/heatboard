@@ -1,7 +1,7 @@
-import Image from "next/image";
 import { BookOpenText, Globe, Users } from "lucide-react";
 import { Footer as CmnFooter } from "@chauffagistes/cmn/ui";
 import { COMMUNITY_POOL_ADDRESS } from "@/app/constants/columns";
+import { DiscordIcon, GithubIcon, XIcon, YoutubeIcon } from "./SocialIcons";
 
 const iconSize = 16;
 
@@ -17,15 +17,15 @@ export default function Footer() {
                 {
                     title: "Réseaux",
                     links: [
-                        { label: "Discord", href: "https://discord.gg/5s9xfbZPBR", external: true, icon: <Image src="/Discord-Symbol-White.svg" width={iconSize} height={iconSize} alt="Discord" /> },
-                        { label: "X", href: "https://x.com/Chauff_pool", external: true, icon: <Image src="/x.svg" width={iconSize} height={iconSize} alt="X" /> },
-                        { label: "YouTube", href: "https://www.youtube.com/@chauffagistes", external: true, icon: <Image src="/youtube-app-white-icon.svg" width={iconSize} height={iconSize} alt="YouTube" /> },
+                        { label: "Discord", href: "https://discord.gg/5s9xfbZPBR", external: true, icon: <DiscordIcon size={iconSize} /> },
+                        { label: "X", href: "https://x.com/Chauff_pool", external: true, icon: <XIcon size={iconSize} /> },
+                        { label: "YouTube", href: "https://www.youtube.com/@chauffagistes", external: true, icon: <YoutubeIcon size={iconSize} /> },
                     ],
                 },
                 {
                     title: "Ressources",
                     links: [
-                        { label: "GitHub", href: "https://github.com/Les-Chauffagistes", external: true, icon: <Image src="/GitHub_Invertocat_Light.svg" width={iconSize} height={iconSize} alt="GitHub" /> },
+                        { label: "GitHub", href: "https://github.com/Les-Chauffagistes", external: true, icon: <GithubIcon size={iconSize} /> },
                         { label: "Wiki", href: "https://learn.chauffagistes-btc.fr", external: true, icon: <BookOpenText size={iconSize} /> },
                     ],
                 },

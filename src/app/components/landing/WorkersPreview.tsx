@@ -4,7 +4,7 @@ import styles from "./landing.module.css";
 
 export default function WorkersPreview() {
     return (
-        <section style={{ background: "var(--background-alt)" }}>
+        <section style={{ background: "var(--background)" }}>
             <div className={styles.container} style={{
                 display: "flex",
                 flexDirection: "column",

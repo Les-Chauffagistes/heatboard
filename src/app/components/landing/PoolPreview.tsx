@@ -4,7 +4,7 @@ import styles from "./landing.module.css";
 
 export default function PoolPreview() {
     return (
-        <section style={{ background: "var(--background)" }}>
+        <section style={{ background: "var(--background-alt)" }}>
             <div className={styles.container} style={{
                 display: "flex",
                 flexDirection: "column",
