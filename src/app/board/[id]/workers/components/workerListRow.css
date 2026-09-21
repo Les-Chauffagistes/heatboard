@@ -1,0 +1,139 @@
+.worker-row-wrap {
+    border: 1px solid var(--card-outline-color);
+    background-color: var(--card-background-color);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.worker-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 14px;
+    border: none;
+    background: none;
+    /* La règle globale `button { color: var(--orange); }` teinterait tout le
+       texte de la ligne en orange sans cette surcharge. */
+    color: var(--foreground);
+    text-align: left;
+    font: inherit;
+}
+
+.worker-row-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background-color: var(--danger-color);
+}
+
+.worker-row-status.online {
+    background-color: var(--success-color);
+}
+
+.worker-row-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.worker-row-stats {
+    display: flex;
+    gap: 18px;
+    flex-shrink: 0;
+}
+
+.worker-row-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.25;
+}
+
+.worker-row-stat-value {
+    font-weight: 700;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.worker-row-stat-label {
+    font-size: 0.7rem;
+    color: var(--secondary-white-text-color);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.worker-row-chevron {
+    flex-shrink: 0;
+    color: var(--secondary-white-text-color);
+    transition: transform 0.25s ease;
+}
+
+.worker-row-chevron.expanded {
+    transform: rotate(180deg);
+}
+
+/* Animation d'ouverture : la piste de grille passe de 0fr à 1fr, ce qui anime
+   une hauteur "auto" sans avoir à deviner une valeur en px (la hauteur réelle
+   dépend du nombre de stats affichées et de si le graphe de poids est présent). */
+.worker-row-detail-collapse {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.25s ease;
+}
+
+.worker-row-detail-collapse.expanded {
+    grid-template-rows: 1fr;
+}
+
+.worker-row-detail-collapse-inner {
+    overflow: hidden;
+    min-height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .worker-row-detail-collapse {
+        transition: none;
+    }
+}
+
+.worker-row-detail {
+    border-top: 1px solid var(--card-outline-color);
+    padding-top: 8px;
+}
+
+.worker-row-detail-stats {
+    display: flex;
+    gap: 20px;
+    padding: 0 10px 10px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--card-outline-color);
+}
+
+/* Le graphe lui-même va quasiment bord à bord (juste assez de marge pour ne
+   pas se faire rogner par le border-radius de la carte). */
+.worker-row-detail-chart {
+    padding: 0 4px;
+}
+
+.worker-row-detail-stat {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+}
+
+.worker-row-detail-stat-value {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.worker-row-detail-stat-label {
+    font-size: 0.7rem;
+    color: var(--secondary-white-text-color);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}

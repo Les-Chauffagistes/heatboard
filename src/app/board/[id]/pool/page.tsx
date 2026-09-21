@@ -2,16 +2,16 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
-import { CircleStar, Flame, SatelliteDish } from "lucide-react";
+import { Flame } from "lucide-react";
 import { getPoolHistory, getPoolStats, getPoolWeight } from "@/app/api";
+import { createAppTheme } from "@/lib/muiTheme";
 import { useTheme } from "@/app/hooks/useTheme";
 
 import HashrateChart from "./components/HashrateChart";
-import CombinedWidgetCard from "./components/CombinedWidgetCard";
+import PoolStatsStrip from "./components/PoolStatsStrip";
 import ResponsivePieContainer from "./components/ResponsivePieContainer";
-import StatsWidgetBar from "../../components/StatsWidgetBar";
 
 import { Weights } from "../../../../../models/API Payloads/Weights";
 import { UserInstantStats } from "../../../../../models/API Payloads/Stats";
@@ -28,7 +28,7 @@ export default function Welcome() {
     const userAddress = path?.split("/")[2];
 
     const { isDark } = useTheme();
-    const theme = useMemo(() => createTheme({ palette: { mode: isDark ? "dark" : "light" } }), [isDark]);
+    const theme = useMemo(() => createAppTheme(isDark), [isDark]);
 
     const [poolStatsHistory, setPoolStatsHistory] = useState<PoolHistoryRecord[] | null>(null);
     const [poolStats, setPoolStats] = useState<UserInstantStats | null>(null);
@@ -90,49 +90,24 @@ export default function Welcome() {
                 paddingBottom: isLargeScreen ? undefined : "var(--mobile-navbar-height, 64px)"
             }}>
                 {poolStats ?
-                    <div style={{
-                        margin: "20px 10px",
-                        display: "flex",
-                        alignItems: "end",
-                        gap: 10,
-                        maxWidth: "100%",
-                        flexWrap: "wrap",
-                    }}>
-                        <CombinedWidgetCard data={{
-                            title: "Hashrate",
-                            values: [
-                                {
-                                    label: "1m",
-                                    value: UnitConverter.fromNumberToString(UnitConverter.fromStringToNumber(poolStats.globalStats.hashrate1m)) + "H/s"
-                                },
-                                {
-                                    label: "1h",
-                                    value: UnitConverter.fromNumberToString(UnitConverter.fromStringToNumber(poolStats.globalStats.hashrate1hr)) + "H/s"
-                                },
-                                {
-                                    label: "1d",
-                                    value: UnitConverter.fromNumberToString(UnitConverter.fromStringToNumber(poolStats.globalStats.hashrate1d)) + "H/s"
-                                },
-                                {
-                                    label: "7d",
-                                    value: UnitConverter.fromNumberToString(UnitConverter.fromStringToNumber(poolStats.globalStats.hashrate7d)) + "H/s"
-                                },
+                    <PoolStatsStrip
+                        heroIcon={Flame}
+                        hero={{
+                            label: "Hashrate (1h)",
+                            value: UnitConverter.fromNumberToString(UnitConverter.fromStringToNumber(poolStats.globalStats.hashrate1hr)) + "H/s",
+                        }}
+                        secondaryGroups={[
+                            [
+                                { label: "1m", value: UnitConverter.fromNumberToString(UnitConverter.fromStringToNumber(poolStats.globalStats.hashrate1m)) + "H/s" },
+                                { label: "1d", value: UnitConverter.fromNumberToString(UnitConverter.fromStringToNumber(poolStats.globalStats.hashrate1d)) + "H/s" },
+                                { label: "7d", value: UnitConverter.fromNumberToString(UnitConverter.fromStringToNumber(poolStats.globalStats.hashrate7d)) + "H/s" },
                             ],
-                            icon: Flame
-                        }} />
-                        <StatsWidgetBar data={[
-                            {
-                                title: "Shares",
-                                value: UnitConverter.fromNumberToString(poolStats.globalStats.shares),
-                                icon: SatelliteDish
-                            },
-                            {
-                                title: "Best Share",
-                                value: UnitConverter.fromNumberToString(poolStats.globalStats.bestshare),
-                                icon: CircleStar
-                            },
-                        ]} />
-                    </div> : null
+                            [
+                                { label: "Shares", value: UnitConverter.fromNumberToString(poolStats.globalStats.shares) },
+                                { label: "Best Share", value: UnitConverter.fromNumberToString(poolStats.globalStats.bestshare) },
+                            ],
+                        ]}
+                    /> : null
                 }
                 {isLargeScreen ?
                     <div style={{ display: "flex", marginTop: 10, height: 400, gap: 10, margin: "0 10px" }}>
@@ -144,9 +119,14 @@ export default function Welcome() {
                         </div>
                     </div>
                     :
-                    <div className="graph" style={{ width: "calc(100% - 20px)", margin: "0 10px 10px", flex: 1 }}>
-                        <ResponsivePieContainer weights={weights} isFake={!isCommunityPool}/>
-                    </div>
+                    <>
+                        <div className="graph" style={{ width: "calc(100% - 20px)", margin: "0 10px 10px", flex: 1 }}>
+                            <ResponsivePieContainer weights={weights} isFake={!isCommunityPool}/>
+                        </div>
+                        <div className="graph" style={{ width: "calc(100% - 20px)", margin: "0 10px 10px" }}>
+                            <HashrateChart data={poolStatsHistory} />
+                        </div>
+                    </>
                 }
             </div>
         </ThemeProvider>

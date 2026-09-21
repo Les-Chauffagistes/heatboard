@@ -8,6 +8,7 @@
   --accent: #227889;
   --gray: #f1f1f3;
   --danger-color: #e04040;
+  --success-color: #2f9e44;
   --secondary-white-text-color: #202020;
   --card-background-color: #e7e7eb;
   --card-outline-color: #bdbdc7;
@@ -39,6 +40,7 @@
     --foreground: #ededed;
     --gray: #1c1c22;
     --danger-color: #d23232;
+    --success-color: #3fb950;
     --secondary-white-text-color: #b0b0b0;
     --card-background-color: #27272f;
     --card-outline-color: #444452;
@@ -65,6 +67,7 @@ html[data-theme="dark"] {
   --foreground: #ededed;
   --gray: #1c1c22;
   --danger-color: #d23232;
+  --success-color: #3fb950;
   --secondary-white-text-color: #b0b0b0;
   --card-background-color: #27272f;
   --card-outline-color: #444452;
@@ -92,6 +95,7 @@ html[data-theme="light"] {
   --accent: #227889;
   --gray: #f1f1f3;
   --danger-color: #e04040;
+  --success-color: #2f9e44;
   --secondary-white-text-color: #202020;
   --card-background-color: #e7e7eb;
   --card-outline-color: #bdbdc7;
@@ -119,7 +123,7 @@ body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-archivo), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -225,4 +229,17 @@ button.danger:hover {
   word-break: break-word;
   overflow-wrap: break-word;
   max-width: 100%;
+}
+
+/* Paire de polices propagée aux graphiques MUI X Charts : Archivo reste sur
+   les mots (titres d'axe, légende — .MuiChartsAxis-label, .MuiChartsLegend-*,
+   non touchés ici, ils héritent déjà d'Archivo via theme.typography dans
+   src/lib/muiTheme.ts), IBM Plex Mono sur les valeurs numériques (ticks
+   d'axe, cellules de tooltip). Ces éléments sont du texte SVG rendu en
+   interne par la lib : on ne peut pas leur passer une className, seule une
+   règle CSS ciblant leurs classes utilitaires les atteint. */
+.MuiChartsAxis-tickLabel,
+.MuiChartsTooltip-valueCell,
+.MuiChartsTooltip-axisValueCell {
+  font-family: var(--font-mono), monospace;
 }

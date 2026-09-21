@@ -124,11 +124,13 @@ export const handlers = [
         const payload: UserInstantStats = {
             address,
             globalStats: {
-                hashrate1m: `${4.85*10e13}TH/s`,
-                hashrate5m: `${4.69*10e13}TH/s`,
-                hashrate1hr: `${5.00*10e13}TH/s`,
-                hashrate1d: `${4.87*10e13}TH/s`,
-                hashrate7d: `${4.85*10e13}TH/s`,
+                // Valeur brute en H/s, sans suffixe — même convention que
+                // `fakeWorkers()` ci-dessus (consommée via `UnitConverter.fromStringToNumber`).
+                hashrate1m: `${4.85*10e13}`,
+                hashrate5m: `${4.69*10e13}`,
+                hashrate1hr: `${5.00*10e13}`,
+                hashrate1d: `${4.87*10e13}`,
+                hashrate7d: `${4.85*10e13}`,
                 shares: 912_345_678,
                 bestshare: 987_654_000_000,
                 bestever: 987_654_000_000,

@@ -3,6 +3,11 @@
 import React, { useState } from "react";
 import { Check, Copy, LucideProps } from "lucide-react";
 import { ForwardRefExoticComponent } from "react";
+import { IBM_Plex_Mono } from "next/font/google";
+
+// Premier usage volontaire du mono (IBM Plex Mono) : jusqu'ici `<code>` héritait
+// juste de la police monospace par défaut du navigateur/OS, jamais un vrai choix.
+const ibmPlexMono = IBM_Plex_Mono({ subsets: ["latin"], weight: "400" });
 
 export default function Code({
   children,
@@ -25,7 +30,7 @@ export default function Code({
         width: "fit-content",
         maxWidth: "100%",
       }}
-      className="break"
+      className={`break ${ibmPlexMono.className}`}
     >
       {children}
       {!notCopiable && (
