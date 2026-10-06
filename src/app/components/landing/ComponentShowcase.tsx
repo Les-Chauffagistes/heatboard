@@ -10,7 +10,7 @@ import ResponsivePieContainer from "@/app/board/[id]/pool/components/ResponsiveP
 import WidgetCard from "@/app/board/components/WidgetCard";
 import WorkerCard from "@/app/board/[id]/workers/components/WorkerCard";
 import { PoolHistoryRecord } from "../../../../models/API Payloads/PoolHistoryRecord";
-import { Weights } from "../../../../models/API Payloads/Weights";
+import { components } from "@chauffagistes/cmn";
 import { CleanWorkerHashrate } from "../../../../models/CleanWorkerHashrate";
 import styles from "./landing.module.css";
 
@@ -28,12 +28,12 @@ const MOCK_POOL_HISTORY: PoolHistoryRecord[] = Array.from({ length: 14 }, (_, i)
     };
 });
 
-const MOCK_WEIGHTS: Weights[] = [
-    { worker_id: "rig-01", avg_weight: "0.32", timestamp: "2026-09-01T00:00:00Z" },
-    { worker_id: "rig-02", avg_weight: "0.24", timestamp: "2026-09-01T00:00:00Z" },
-    { worker_id: "antminer-s19", avg_weight: "0.18", timestamp: "2026-09-01T00:00:00Z" },
-    { worker_id: "whatsminer-m30", avg_weight: "0.14", timestamp: "2026-09-01T00:00:00Z" },
-    { worker_id: "s21-pro", avg_weight: "0.12", timestamp: "2026-09-01T00:00:00Z" },
+const MOCK_WEIGHTS: components["schemas"]["PoolDistributionElement"][] = [
+    { workername: "rig-01", diff_sum: 32, part: 0.32, shares_ok: 32, shares_ko: 0 },
+    { workername: "rig-02", diff_sum: 24, part: 0.24, shares_ok: 24, shares_ko: 0 },
+    { workername: "antminer-s19", diff_sum: 18, part: 0.18, shares_ok: 18, shares_ko: 0 },
+    { workername: "whatsminer-m30", diff_sum: 14, part: 0.14, shares_ok: 14, shares_ko: 0 },
+    { workername: "s21-pro", diff_sum: 12, part: 0.12, shares_ok: 12, shares_ko: 0 },
 ];
 
 const MOCK_WORKER: CleanWorkerHashrate & { weight: number } = {

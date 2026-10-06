@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { Weights } from "../../../../../../models/API Payloads/Weights";
 import RepartitionPie from "./RepartitionPie";
+import { components } from "@chauffagistes/cmn";
 
-export default function ResponsivePieContainer({ weights, isFake }: Readonly<{ weights: Weights[], isFake: boolean }>) {
+export default function ResponsivePieContainer({ weights, isFake }: Readonly<{
+    weights: components["schemas"]["PoolDistributionElement"][],
+    isFake: boolean
+}>) {
   const ref = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState(300);
 
@@ -18,29 +21,39 @@ export default function ResponsivePieContainer({ weights, isFake }: Readonly<{ w
   if (isFake) {
     weights = [
       {
-        "avg_weight": "0.3",
-        "timestamp": "2023-04-01T00:00:00.000Z",
-        "worker_id": "worker1"
+        "part": 0.3,
+        "workername": "worker1",
+        "diff_sum": 0,
+        "shares_ok": 0,
+        "shares_ko": 0
       },
       {
-        "avg_weight": "0.2",
-        "timestamp": "2023-04-01T00:00:00.000Z",
-        "worker_id": "worker2"
+        "part": 0.2,
+        "workername": "worker2",
+        "diff_sum": 0,
+        "shares_ok": 0,
+        "shares_ko": 0
       },
       {
-        "avg_weight": "0.15",
-        "timestamp": "2023-04-01T00:00:00.000Z",
-        "worker_id": "worker3"
+        "part": 0.15,
+        "workername": "worker3",
+        "diff_sum": 0,
+        "shares_ok": 0,
+        "shares_ko": 0
       },
       {
-        "avg_weight": "0.10",
-        "timestamp": "2023-04-01T00:00:00.000Z",
-        "worker_id": "worker5"
+        "part": 0.10,
+        "workername": "worker5",
+        "diff_sum": 0,
+        "shares_ok": 0,
+        "shares_ko": 0
       },
       {
-        "avg_weight": "0.07",
-        "timestamp": "2023-04-01T00:00:00.000Z",
-        "worker_id": "worker5"
+        "part": 0.07,
+        "workername": "worker5",
+        "diff_sum": 0,
+        "shares_ok": 0,
+        "shares_ko": 0
       },
     ]
   }

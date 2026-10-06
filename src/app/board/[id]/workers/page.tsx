@@ -23,7 +23,7 @@ import ExtractWorkername from "@/lib/ExtractWorkername";
 import "./styles.css";
 
 import { HASHRATE_COLUMNS, COMMUNITY_POOL_ADDRESS, isValidHashrateColumn, type HashrateColumn } from "@/app/constants/columns";
-import {components, BitcoinAPIClient, HistoryAPIClient, PoolAPIClient} from "@chauffagistes/cmn";
+import {components, BitcoinAPIClient, CKPoolAPIClient, PoolAPIClient} from "@chauffagistes/cmn";
 import {CleanWorkerHashrate} from "../../../../../models/CleanWorkerHashrate";
 import {config} from "@/lib/config";
 
@@ -34,7 +34,7 @@ type VisibleColumns = HashrateColumn;
 
 export default function Home() {
     const [userStats, setUserStats] = useState<components["schemas"]["PoolStats"] | null>(null);
-    const [weights, setWeights] = useState<components["schemas"]["WorkersWeights"][]>([]);
+    const [weights, setWeights] = useState<components["schemas"]["PoolDistributionElement"][]>([]);
     const [visibleColumns, setVisibleColumns] = useState<Set<VisibleColumns>>(new Set(INITIAL_VISIBLE_COLUMNS));
     const [bitcoinPrice, setBitcoinPrice] = useState<number | null>(null);
     const [bitcoinBlockReward, setBitcoinBlockReward] = useState<number | null>(null);
@@ -81,12 +81,12 @@ export default function Home() {
         const fetchData = async () => {
             // Données essentielles : leur échec bloque le rendu de la page.
             const poolAPIClient = new PoolAPIClient(config.API_URL);
-            const historyAPIClient = new HistoryAPIClient(config.API_URL);
+            const ckpoolAPIClient = new CKPoolAPIClient(config.CKPOOL_API_URL);
             const bitcoinAPIClient = new BitcoinAPIClient(config.BITCOIN_API_URL);
             try {
                 const [stats, weights] = await Promise.all([
                     poolAPIClient.getPoolStats(userAddress),
-                    historyAPIClient.getPoolWeight(userAddress),
+                    ckpoolAPIClient.getPoolShareRepartition(userAddress),
                 ]);
 
                 if (abortController.signal.aborted) return;
@@ -148,7 +148,7 @@ export default function Home() {
     for (const [, worker] of Object.entries(payload)) {
         const workerName = ExtractWorkername.fromPool(worker.workername);
         if (workerName) {
-            worker.weight = Number.parseFloat(weights.find(w => w.worker_id === workerName)?.avg_weight || "0");
+            worker.weight = (weights.find(w => w.workername === workerName)?.part ?? 0) * 100;
         }
     }
 

@@ -6,7 +6,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
 import { CircleStar, Flame, SatelliteDish } from "lucide-react";
 import { useTheme } from "@/app/hooks/useTheme";
-import {components, HistoryAPIClient, PoolAPIClient} from "@chauffagistes/cmn"
+import {CKPoolAPIClient, components, HistoryAPIClient, PoolAPIClient} from "@chauffagistes/cmn"
 
 import HashrateChart from "./components/HashrateChart";
 import CombinedWidgetCard from "./components/CombinedWidgetCard";
@@ -31,7 +31,7 @@ export default function Welcome() {
 
     const [poolStatsHistory, setPoolStatsHistory] = useState<components["schemas"]["PoolStatsHistory"][] | null>(null);
     const [poolStats, setPoolStats] = useState<components["schemas"]["PoolStats"] | null>(null);
-    const [weights, setWeights] = useState<components["schemas"]["WorkersWeights"][]>([]);
+    const [weights, setWeights] = useState<components["schemas"]["PoolDistributionElement"][]>([]);
 
     const isLargeScreen = useMediaQuery("(min-width: 800px)");
     const isCommunityPool = userAddress === COMMUNITY_POOL_ADDRESS;
@@ -47,9 +47,10 @@ export default function Welcome() {
         const fetchData = async () => {
             try {
                 const historyAPIClient = new HistoryAPIClient(config.HISTORY_API_URL)
+                const ckpoolAPIClient = new CKPoolAPIClient(config.CKPOOL_API_URL)
                 const [history, weights, stats] = await Promise.all([
                     historyAPIClient.getPoolStatsHistory(userAddress),
-                    historyAPIClient.getPoolWeight(userAddress),
+                    ckpoolAPIClient.getPoolShareRepartition(userAddress),
                     poolAPIClient.getPoolStats(userAddress),
                 ]);
 

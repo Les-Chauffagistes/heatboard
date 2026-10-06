@@ -15,6 +15,7 @@ window.__CONFIG__ = {
   BASE_URL: "${BASE_URL:-}",
   API_URL: "${API_URL:-}",
   HISTORY_API_URL: "${HISTORY_API_URL:-}",
+  CKPOOL_API_URL: "${CKPOOL_API_URL:-}",
   BITCOIN_API_URL: "${BITCOIN_API_URL:-}",
   AUTH_URL: "${AUTH_URL:-}",
   AUTH_API_URL: "${AUTH_API_URL:-}",

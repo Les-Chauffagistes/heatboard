@@ -2,9 +2,9 @@ import { http, HttpResponse } from "msw";
 import type { UserInstantStats } from "../models/API Payloads/Stats";
 import type { WorkerHistoryRecord } from "../models/API Payloads/WorkerHistoryRecord";
 import type { PoolHistoryRecord } from "../models/API Payloads/PoolHistoryRecord";
-import type { Weights } from "../models/API Payloads/Weights";
 import type { BitcoinPrice } from "../models/API Payloads/BitcoinPrice";
 import type { Worker } from "../models/Worker";
+import type { components } from "@chauffagistes/cmn";
 
 /**
  * Handlers MSW pour mocker les 4 API externes (API_URL, HISTORY_API_URL,
@@ -182,16 +182,18 @@ export const handlers = [
         return HttpResponse.json(records);
     }),
 
-    http.get("*/v1/:address/weights", () => {
-        const now = new Date().toISOString();
-        const rawWeights = [18.5, 22.3, 15.8, 20.1, 14.7, 8.6];
-        const weights: Weights[] = FAKE_WORKER_NAMES.map((name, i) => ({
-            worker_id: name,
-            avg_weight: rawWeights[i].toFixed(2),
-            timestamp: now,
+    // ===== CKPOOL_API_URL =====
+    http.get("*/v1/distribution/:address", () => {
+        const parts = [0.32, 0.24, 0.18, 0.14, 0.12, 0.10];
+        const distribution: components["schemas"]["PoolDistributionElement"][] = FAKE_WORKER_NAMES.map((name, i) => ({
+            workername: name,
+            diff_sum: parts[i] * 1_000_000,
+            part: parts[i],
+            shares_ok: Math.round(parts[i] * 10_000),
+            shares_ko: Math.round(parts[i] * 100),
         }));
 
-        return HttpResponse.json(weights);
+        return HttpResponse.json(distribution);
     }),
 
     // ===== BITCOIN_API_URL =====

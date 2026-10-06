@@ -32,18 +32,25 @@ Serveur d'historique : https://github.com/Les-Chauffagistes/history-server
 |----------|------------------|---------|
 | `GET /v1/{address}/worker/{workername}/{period}` | `getWorkerStatsHistory(...)` | `WorkerHistoryRecord[]` |
 | `GET /v1/{address}/pool` | `getPoolHistory(address)` | `PoolHistoryRecord[]` |
-| `GET /v1/{address}/weights` | `getPoolWeight(address)` | `Weights[]` |
 
 `period` : `daily` (30 jours, 1 pt/30 min) ou `forever` (1 pt/jour).
 
-## 3. Bitcoin API (`BITCOIN_API_URL`)
+## 3. CKPool API (`CKPOOL_API_URL`)
+
+| Endpoint | Fonction cliente | Renvoie |
+|----------|------------------|---------|
+| `GET /v1/distribution/{address}?window_days=14` | `getPoolShareRepartition(address)` | `PoolDistributionElement[]` |
+
+Cette distribution fournit `workername`, `part`, `diff_sum`, `shares_ok` et `shares_ko`.
+
+## 4. Bitcoin API (`BITCOIN_API_URL`)
 
 | Endpoint | Fonction cliente | Renvoie |
 |----------|------------------|---------|
 | `GET /v1/bitcoin-price` | `getBtcPrice()` | `BitcoinPrice` (multi-devises) |
 | `GET /v1/bitcoin-block-reward` | `getBtcBlockReward()` | `number` |
 
-## 4. Auth API (`AUTH_API_URL` / `AUTH_URL`)
+## 5. Auth API (`AUTH_API_URL` / `AUTH_URL`)
 Client : `src/lib/auth.ts`. Auth par **cookies** (`credentials: "include"`).
 
 | Endpoint | Fonction | Comportement |
@@ -75,5 +82,6 @@ Worker** (`msw`).
   renvoyer un payload réaliste conforme aux types de `models/`.
 
 Endpoints déjà mockés : `*/me`, `*/refresh`, `*/logout`, `*/api/stats/:address`,
-`*/v1/:address/worker/:workername/:period`, `*/v1/:address/pool`, `*/v1/:address/weights`,
+`*/v1/:address/worker/:workername/:period`, `*/v1/:address/pool`,
+`*/v1/distribution/:address`,
 `*/v1/bitcoin-price`, `*/v1/bitcoin-block-reward`.

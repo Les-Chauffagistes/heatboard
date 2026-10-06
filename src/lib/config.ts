@@ -29,4 +29,9 @@ export const config = {
             ? (window.__CONFIG__?.AUTH_API_URL ?? "")
             : (process.env.AUTH_API_URL ?? "");
     },
+    get CKPOOL_API_URL() {
+        return typeof window !== "undefined"
+            ? (window.__CONFIG__?.CKPOOL_API_URL ?? "")
+            : (process.env.CKPOOL_API_URL ?? "");
+    },
 };

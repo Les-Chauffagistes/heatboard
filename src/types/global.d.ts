@@ -6,5 +6,6 @@ interface Window {
         BITCOIN_API_URL: string;
         AUTH_URL: string;
         AUTH_API_URL: string;
+        CKPOOL_API_URL: string;
     };
 }
