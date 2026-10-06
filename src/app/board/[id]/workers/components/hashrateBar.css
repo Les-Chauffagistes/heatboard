@@ -5,6 +5,12 @@
     padding: 2px 7px;
 }
 
+.weight-cell p,
+.share-cell p,
+.hashrate-cell p {
+    font-family: var(--font-mono), monospace;
+}
+
 .weight-cell:first-of-type,
 .share-cell:first-of-type,
 .hashrate-cell:first-of-type {

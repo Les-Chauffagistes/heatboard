@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Weights } from "../../../../../../models/API Payloads/Weights";
 import RepartitionPie from "./RepartitionPie";
 
-export default function ResponsivePieContainer({ weights, isFake }: { weights: Weights[], isFake: boolean }) {
+export default function ResponsivePieContainer({ weights, isFake }: Readonly<{ weights: Weights[], isFake: boolean }>) {
   const ref = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState(300);
 

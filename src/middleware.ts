@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { REQUEST_ID_HEADER, resolveCorrelationId, runWithCorrelationId } from "@chauffagistes/cmn";
+import { extractTraceContext, withTraceContext } from "@chauffagistes/cmn/tracing";
 import { logger } from "@/lib/logger";
 
 // Le middleware Next.js s'exécute avant le handler et ne voit jamais la
@@ -18,19 +18,14 @@ export const config = {
 };
 
 export function middleware(request: NextRequest) {
-  const correlationId = resolveCorrelationId(request.headers);
+  const ctx = extractTraceContext(request.headers);
 
-  return runWithCorrelationId(correlationId, () => {
+  return withTraceContext(ctx, () => {
     logger.info("requête reçue", {
       method: request.method,
       path: request.nextUrl.pathname,
     });
 
-    const forwardedHeaders = new Headers(request.headers);
-    forwardedHeaders.set(REQUEST_ID_HEADER, correlationId);
-
-    const response = NextResponse.next({ request: { headers: forwardedHeaders } });
-    response.headers.set(REQUEST_ID_HEADER, correlationId);
-    return response;
+    return NextResponse.next();
   });
 }

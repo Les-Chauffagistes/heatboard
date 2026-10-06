@@ -14,6 +14,21 @@ import WorkerPannel from './WorkerPannel';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
+// Aligne le thème ag-Grid (par défaut gris neutre) sur la palette de l'app :
+// les valeurs sont des `var(--...)`, donc suivent automatiquement le thème
+// clair/sombre et la teinte de fond retenue dans globals.css.
+const gridThemeParams = {
+    backgroundColor: "var(--background)",
+    foregroundColor: "var(--foreground)",
+    textColor: "var(--foreground)",
+    chromeBackgroundColor: "var(--card-background-color)",
+    headerBackgroundColor: "var(--card-background-color)",
+    headerTextColor: "var(--foreground)",
+    oddRowBackgroundColor: "var(--background-alt)",
+    borderColor: "var(--card-outline-color)",
+    accentColor: "var(--orange)",
+};
+
 
 /**
  * Ligne "détail" injectée juste après la ligne sélectionnée. Elle est rendue en
@@ -85,7 +100,7 @@ export const MainGrid = forwardRef<AgGridReact<CleanWorkerHashrate>, {
 
     const { isDark } = useTheme();
     const [myTheme, setMyTheme] = useState(() =>
-        themeQuartz.withPart(colorSchemeLight) // valeur par défaut (SSR)
+        themeQuartz.withPart(colorSchemeLight).withParams(gridThemeParams) // valeur par défaut (SSR)
     );
 
     // Nom du mineur dont le graphique est actuellement déplié sous sa ligne.
@@ -94,7 +109,9 @@ export const MainGrid = forwardRef<AgGridReact<CleanWorkerHashrate>, {
     const pendingScrollRef = useRef<string | null>(null);
 
     useEffect(() => {
-        setMyTheme(themeQuartz.withPart(isDark ? colorSchemeDark : colorSchemeLight));
+        setMyTheme(
+            themeQuartz.withPart(isDark ? colorSchemeDark : colorSchemeLight).withParams(gridThemeParams)
+        );
     }, [isDark]);
 
     const minHashrateWidth = 130;

@@ -7,7 +7,6 @@ import { useMediaQuery } from "@mui/material";
 import { Computer, Search, User } from "lucide-react";
 import { AgGridReact } from "ag-grid-react";
 
-import { getBtcBlockReward, getBtcPrice, getPoolWeight, getPoolStats } from "@/app/api";
 import { useTheme } from "@/app/hooks/useTheme";
 import { useHideOnScroll } from "@/app/hooks/useHideOnScroll";
 import { setMobileNavInputFocused, setMobileNavScrolledDown } from "@/app/hooks/useMobileNavVisibility";
@@ -21,14 +20,12 @@ import WorkerList from "./components/WorkerList";
 import UnitConverter from "@/lib/UnitConverter";
 import ExtractWorkername from "@/lib/ExtractWorkername";
 
-import { UserInstantStats } from "@/../models/API Payloads/Stats";
-import { CleanWorkerHashrate } from "@/../models/CleanWorkerHashrate";
-import { Weights } from "@/../models/API Payloads/Weights";
-import { Worker } from "@/../models/Worker";
-
 import "./styles.css";
 
 import { HASHRATE_COLUMNS, COMMUNITY_POOL_ADDRESS, isValidHashrateColumn, type HashrateColumn } from "@/app/constants/columns";
+import {components, BitcoinAPIClient, HistoryAPIClient, PoolAPIClient} from "@chauffagistes/cmn";
+import {CleanWorkerHashrate} from "../../../../../models/CleanWorkerHashrate";
+import {config} from "@/lib/config";
 
 
 const INITIAL_VISIBLE_COLUMNS = new Set(HASHRATE_COLUMNS);
@@ -36,8 +33,8 @@ const INITIAL_VISIBLE_COLUMNS = new Set(HASHRATE_COLUMNS);
 type VisibleColumns = HashrateColumn;
 
 export default function Home() {
-    const [userStats, setUserStats] = useState<UserInstantStats | null>(null);
-    const [weights, setWeights] = useState<Weights[]>([]);
+    const [userStats, setUserStats] = useState<components["schemas"]["PoolStats"] | null>(null);
+    const [weights, setWeights] = useState<components["schemas"]["WorkersWeights"][]>([]);
     const [visibleColumns, setVisibleColumns] = useState<Set<VisibleColumns>>(new Set(INITIAL_VISIBLE_COLUMNS));
     const [bitcoinPrice, setBitcoinPrice] = useState<number | null>(null);
     const [bitcoinBlockReward, setBitcoinBlockReward] = useState<number | null>(null);
@@ -83,10 +80,13 @@ export default function Home() {
 
         const fetchData = async () => {
             // Données essentielles : leur échec bloque le rendu de la page.
+            const poolAPIClient = new PoolAPIClient(config.API_URL);
+            const historyAPIClient = new HistoryAPIClient(config.API_URL);
+            const bitcoinAPIClient = new BitcoinAPIClient(config.BITCOIN_API_URL);
             try {
                 const [stats, weights] = await Promise.all([
-                    getPoolStats(userAddress),
-                    getPoolWeight(userAddress),
+                    poolAPIClient.getPoolStats(userAddress),
+                    historyAPIClient.getPoolWeight(userAddress),
                 ]);
 
                 if (abortController.signal.aborted) return;
@@ -104,13 +104,13 @@ export default function Home() {
 
             // Données secondaires (prix BTC, récompense de bloc) : elles ne peuplent
             // qu'une colonne du tableau, leur échec ne doit pas empêcher l'affichage du reste.
-            getBtcPrice()
+            bitcoinAPIClient.getBtcPrice()
                 .then((price) => {
                     if (!abortController.signal.aborted) setBitcoinPrice(price.EUR);
                 })
                 .catch(() => {});
 
-            getBtcBlockReward()
+            bitcoinAPIClient.getBtcBlockReward()
                 .then((blockReward) => {
                     if (!abortController.signal.aborted) setBitcoinBlockReward(blockReward);
                 })
@@ -143,7 +143,7 @@ export default function Home() {
         return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Aucune donnée</div>;
     }
 
-    const payload = { ...userStats.workers } as (Worker & { weight: number })[];
+    const payload = { ...userStats.workers } as (components["schemas"]["Worker"] & { weight: number })[];
 
     for (const [, worker] of Object.entries(payload)) {
         const workerName = ExtractWorkername.fromPool(worker.workername);
@@ -214,7 +214,7 @@ export default function Home() {
     const isHashrate1dVisible = visibleColumns.has("hashrate1d");
     const isHashrate7dVisible = visibleColumns.has("hashrate7d");
 
-    function normalizeHashrate(workers: (Worker & { weight: number })[]): CleanWorkerHashrate[] {
+    function normalizeHashrate(workers: (components["schemas"]["Worker"] & { weight: number })[]): CleanWorkerHashrate[] {
         return Object.entries(workers).map(([, worker]) => {
             const base: CleanWorkerHashrate = {
                 workername: worker.workername,

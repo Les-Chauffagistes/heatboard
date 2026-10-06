@@ -22,21 +22,80 @@ import type { Worker } from "../models/Worker";
 const FAKE_WORKER_NAMES = ["rig-01", "rig-02", "antminer-s19", "whatsminer-m30", "s21-pro", "avalon-a1466"];
 
 function fakeWorkers(address: string): Worker[] {
-    return FAKE_WORKER_NAMES.map((name, i) => {
-        const offline = i === FAKE_WORKER_NAMES.length - 1;
-        return {
-            workername: `${address}.${name}`,
-            lastshare: `${Math.floor(Date.now() / 1000) - (offline ? 3600 : 30)}`,
-            shares: 1_000_000 + i * 123_456,
-            bestshare: 50_000 + i * 1000,
-            bestever: 75_000 + i * 1500,
-            hashrate1m: offline ? "0" : `${(80 + i * 10).toFixed(1)}TH/s`,
-            hashrate5m: offline ? "0" : `${(78 + i * 10).toFixed(1)}TH/s`,
-            hashrate1hr: offline ? "0" : `${(76 + i * 10).toFixed(1)}TH/s`,
-            hashrate1d: offline ? "0" : `${(74 + i * 10).toFixed(1)}TH/s`,
-            hashrate7d: offline ? "0" : `${(72 + i * 10).toFixed(1)}TH/s`,
-        };
-    });
+    return [
+        {
+            "workername": `${address}.rig-01`,
+            "lastshare": `${Math.floor(Date.now() / 1000)}`,
+            "hashrate1m":  "25232000000000",
+            "hashrate5m":  "23562000000000",
+            "hashrate1hr": "23457000000000",
+            "hashrate1d":  "23322000000000",
+            "hashrate7d":  "23752000000000",
+            "shares": 1_300_000_000,
+            "bestshare": 75_000_000,
+            "bestever": 75_000_000,
+        },
+        {
+            "workername": `${address}.rig-02`,
+            "lastshare": `${Math.floor(Date.now() / 1000)}`,
+            "hashrate1m":  "2332000000000",
+            "hashrate5m":  "753562000000000",
+            "hashrate1hr": "73457000000000",
+            "hashrate1d":  "83322000000000",
+            "hashrate7d":  "89752000000000",
+            "shares": 8_300_000_000,
+            "bestshare": 98_100_000,
+            "bestever": 98_100_000,
+        },
+        {
+            "workername": `${address}.antminer-s19`,
+            "lastshare": `${Math.floor(Date.now() / 1000) - 3600}`,
+            "hashrate1m":  "0",
+            "hashrate5m":  "355000",
+            "hashrate1hr": "51000000000000",
+            "hashrate1d":  "111000000000000",
+            "hashrate7d":  "111000000000000",
+            "shares": 7_400_000_000,
+            "bestshare": 126_100_000,
+            "bestever": 126_100_000,
+        },
+        {
+            "workername": `${address}.whatsminer-m30`,
+            "lastshare": "",
+            "hashrate1m":  "45000000000000",
+            "hashrate5m":  "44100000000000",
+            "hashrate1hr": "44100000000000",
+            "hashrate1d":  "44100000000000",
+            "hashrate7d":  "45100000000000",
+            "shares": 7_400_000_000,
+            "bestshare": 126_100_000,
+            "bestever": 126_100_000,
+        },
+        {
+            "workername": `${address}.s21-pro`,
+            "lastshare": "",
+            "hashrate1m":  "235000000000000",
+            "hashrate5m":  "233000000000000",
+            "hashrate1hr": "235000000000000",
+            "hashrate1d":  "244000000000000",
+            "hashrate7d":  "251000000000000",
+            "shares": 355_400_000_000,
+            "bestshare": 126_100_000,
+            "bestever": 126_100_000,
+        },
+        {
+            "workername": `${address}.avalon-a1466`,
+            "lastshare": "",
+            "hashrate1m":  "902000000000000",
+            "hashrate5m":  "913000000000000",
+            "hashrate1hr": "905000000000000",
+            "hashrate1d":  "901000000000000",
+            "hashrate7d":  "903000000000000",
+            "shares": 5_230_000_000,
+            "bestshare": 511_100_000,
+            "bestever": 511_100_000,
+        },
+    ]
 }
 
 export const handlers = [
@@ -65,14 +124,14 @@ export const handlers = [
         const payload: UserInstantStats = {
             address,
             globalStats: {
-                hashrate1m: `${onlineWorkers.length * 85}TH/s`,
-                hashrate5m: `${onlineWorkers.length * 83}TH/s`,
-                hashrate1hr: `${onlineWorkers.length * 81}TH/s`,
-                hashrate1d: `${onlineWorkers.length * 79}TH/s`,
-                hashrate7d: `${onlineWorkers.length * 77}TH/s`,
-                shares: 12_345_678,
-                bestshare: 987_654,
-                bestever: 1_234_567,
+                hashrate1m: `${4.85*10e13}TH/s`,
+                hashrate5m: `${4.69*10e13}TH/s`,
+                hashrate1hr: `${5.00*10e13}TH/s`,
+                hashrate1d: `${4.87*10e13}TH/s`,
+                hashrate7d: `${4.85*10e13}TH/s`,
+                shares: 912_345_678,
+                bestshare: 987_654_000_000,
+                bestever: 987_654_000_000,
                 workers: workers.length,
             },
             workers,
@@ -112,11 +171,11 @@ export const handlers = [
 
         const records: PoolHistoryRecord[] = Array.from({ length: points }, (_, i) => {
             const t = now - (points - i) * dayMs;
-            const base = 400 + Math.sin(i / 4) * 50 + Math.random() * 20;
+            const base = 485000000000000 + Math.sin(i / 4) * 10 + Math.random() * 2000000000000;
             return {
                 timestamp: new Date(t).toISOString(),
                 avg_hashrate1h: Number((base).toFixed(2)),
-                avg_hashrate1d: Number((base - 10).toFixed(2)),
+                avg_hashrate1d: Number((base - 500000000000).toFixed(2)),
             };
         });
 
