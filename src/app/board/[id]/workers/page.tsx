@@ -145,9 +145,9 @@ export default function Home() {
     const payload = { ...userStats.workers } as (components["schemas"]["Worker"] & { weight: number })[];
 
     for (const [, worker] of Object.entries(payload)) {
-        const workerName = ExtractWorkername.fromPool(worker.workername);
-        if (workerName) {
-            worker.weight = (weights.find(w => w.workername === workerName)?.part ?? 0) * 100;
+        // L'API de distribution renvoie le workername complet ("adresse.nom"), comme les stats.
+        if (ExtractWorkername.fromPool(worker.workername)) {
+            worker.weight = (weights.find(w => w.workername === worker.workername)?.part ?? 0) * 100;
         }
     }
 
