@@ -5,7 +5,7 @@ export interface CleanWorkerHashrate {
     hashrate1h: number
     hashrate1d: number
     hashrate7d: number
-    lastshare: string
+    lastshare: number
     shares: number
     bestshare: number
     bestever: number

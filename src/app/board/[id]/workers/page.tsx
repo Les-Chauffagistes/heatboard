@@ -23,7 +23,7 @@ import ExtractWorkername from "@/lib/ExtractWorkername";
 import "./styles.css";
 
 import { HASHRATE_COLUMNS, COMMUNITY_POOL_ADDRESS, isValidHashrateColumn, type HashrateColumn } from "@/app/constants/columns";
-import {components, BitcoinAPIClient, CKPoolAPIClient, PoolAPIClient} from "@chauffagistes/cmn";
+import {components, BitcoinAPIClient, PoolAPIClient} from "@chauffagistes/cmn";
 import {CleanWorkerHashrate} from "../../../../../models/CleanWorkerHashrate";
 import {config} from "@/lib/config";
 
@@ -81,12 +81,11 @@ export default function Home() {
         const fetchData = async () => {
             // Données essentielles : leur échec bloque le rendu de la page.
             const poolAPIClient = new PoolAPIClient(config.API_URL);
-            const ckpoolAPIClient = new CKPoolAPIClient(config.CKPOOL_API_URL);
             const bitcoinAPIClient = new BitcoinAPIClient(config.BITCOIN_API_URL);
             try {
                 const [stats, weights] = await Promise.all([
                     poolAPIClient.getPoolStats(userAddress),
-                    ckpoolAPIClient.getPoolShareRepartition(userAddress),
+                    poolAPIClient.getPoolShareDistribution(userAddress),
                 ]);
 
                 if (abortController.signal.aborted) return;

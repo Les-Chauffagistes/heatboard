@@ -43,7 +43,7 @@ const MOCK_WORKER: CleanWorkerHashrate & { weight: number } = {
     hashrate1h: 88_000_000_000_000,
     hashrate1d: 91_000_000_000_000,
     hashrate7d: 89_000_000_000_000,
-    lastshare: "2026-09-16T10:00:00Z",
+    lastshare: 1792380180,
     shares: 1_250_000_000,
     bestshare: 60_000_000_000,
     bestever: 610_000_000_000,

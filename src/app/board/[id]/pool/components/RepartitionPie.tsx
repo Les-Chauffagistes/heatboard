@@ -10,7 +10,7 @@ import {components} from "@chauffagistes/cmn";
 
 
 function getPieData(weights: components["schemas"]["PoolDistributionElement"][], maxOthersPercent = 0.15) {
-    const parsed = weights.map((w) => ({label: w.workername, value: w.part}));
+    const parsed = weights.map((w) => ({label: w.workername.split(".").at(-1), value: w.part}));
     parsed.sort((a, b) => b.value - a.value);
 
     const total = parsed.reduce((sum, w) => sum + w.value, 0);

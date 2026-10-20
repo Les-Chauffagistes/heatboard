@@ -6,7 +6,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
 import { CircleStar, Flame, SatelliteDish } from "lucide-react";
 import { useTheme } from "@/app/hooks/useTheme";
-import {CKPoolAPIClient, components, HistoryAPIClient, PoolAPIClient} from "@chauffagistes/cmn"
+import { components, HistoryAPIClient, PoolAPIClient } from "@chauffagistes/cmn"
 
 import HashrateChart from "./components/HashrateChart";
 import CombinedWidgetCard from "./components/CombinedWidgetCard";
@@ -47,10 +47,10 @@ export default function Welcome() {
         const fetchData = async () => {
             try {
                 const historyAPIClient = new HistoryAPIClient(config.HISTORY_API_URL)
-                const ckpoolAPIClient = new CKPoolAPIClient(config.CKPOOL_API_URL)
+                const poolAPIClient = new PoolAPIClient(config.API_URL)
                 const [history, weights, stats] = await Promise.all([
                     historyAPIClient.getPoolStatsHistory(userAddress),
-                    ckpoolAPIClient.getPoolShareRepartition(userAddress),
+                    poolAPIClient.getPoolShareDistribution(userAddress),
                     poolAPIClient.getPoolStats(userAddress),
                 ]);
 
