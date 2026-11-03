@@ -7,7 +7,7 @@ Objet avec getters qui, **au runtime**, lisent :
 - côté navigateur : `window.__CONFIG__.<KEY>` (injecté par `/config.js`),
 - côté serveur : `process.env.<KEY>`.
 
-Clés : `BASE_URL`, `API_URL`, `HISTORY_API_URL`, `BITCOIN_API_URL`, `AUTH_URL`,
+Clés : `BASE_URL`, `API_URL`, `HISTORY_API_URL`, `CKPOOL_API_URL`, `BITCOIN_API_URL`, `AUTH_URL`,
 `AUTH_API_URL`. À utiliser dans le code **partagé** (client) — ex. `src/app/api.ts`,
 `src/lib/auth.ts`, pages client.
 
@@ -19,7 +19,7 @@ serveur (ex. `route:exists`).
 ### Injection runtime côté client
 `docker-entrypoint.sh` génère `public/config.js` à partir des variables d'environnement :
 ```js
-window.__CONFIG__ = { BASE_URL, API_URL, HISTORY_API_URL, BITCOIN_API_URL, AUTH_URL, AUTH_API_URL };
+window.__CONFIG__ = { BASE_URL, API_URL, HISTORY_API_URL, CKPOOL_API_URL, BITCOIN_API_URL, AUTH_URL, AUTH_API_URL };
 ```
 `src/app/layout.tsx` charge `<script src="/config.js">` avant l'hydratation.
 Le type de `window.__CONFIG__` est déclaré dans `src/types/global.d.ts`.
@@ -37,6 +37,7 @@ Le type de `window.__CONFIG__` est déclaré dans `src/types/global.d.ts`.
 |----------|------------------|-------|
 | `API_URL` | `https://chauffagistes-pool.fr:3000` | Pool API |
 | `HISTORY_API_URL` | `http://localhost:8080` | Serveur d'historique |
+| `CKPOOL_API_URL` | — | Distribution de parts CKPool |
 | `BITCOIN_API_URL` | `https://bitcoin.chauffagistes-pool.fr` | Prix/reward BTC |
 | `AUTH_URL` / `AUTH_API_URL` | — | Auth (UI / API) |
 | `BASE_URL` | `https://stats.chauffagistes-pool.fr` | URL publique du site |

@@ -48,8 +48,8 @@ récupèrent leurs données via `src/app/api.ts` (souvent enveloppé dans un hoo
 
 ## Données ↔ page (résumé)
 
-- `board/workers` → `getPoolStats`, `getPoolWeight`, `getBtcPrice`, `getBtcBlockReward`.
-- `board/pool` → `getPoolStats`, `getPoolHistory`, `getPoolWeight`.
+- `board/workers` → `getPoolStats`, `getPoolShareRepartition`, `getBtcPrice`, `getBtcBlockReward`.
+- `board/pool` → `getPoolStats`, `getPoolHistory`, `getPoolShareRepartition`.
 - `board/my` → `useSession`, `getLinkedWorkers`, `patchUser`.
 - `start` → `useSession`, `getLinkedWorkers`, `getUserToken`, `registerWorkername` +
   WebSocket (voir [`workflows.md`](./workflows.md)).

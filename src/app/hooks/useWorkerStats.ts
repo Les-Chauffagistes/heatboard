@@ -1,11 +1,13 @@
 import useSWR from "swr";
-import { getWorkerStatsHistory } from "@/app/api";
 import { WorkerHistoryRecord } from "../../../models/API Payloads/WorkerHistoryRecord";
+import {HistoryAPIClient} from "@chauffagistes/cmn";
+import {config} from "@/lib/config";
 
 export function useWorkerStats(userAddress: string, workerName: string, period: "forever" | "daily" = "forever"): {stats: WorkerHistoryRecord[], isLoading: boolean, isError: boolean} {
-  const { data, error, isLoading } = useSWR(
+  const historyAPIClient = new HistoryAPIClient(config.HISTORY_API_URL);
+    const { data, error, isLoading } = useSWR(
     ["workerStats", userAddress, workerName, period],
-    () => getWorkerStatsHistory(userAddress, workerName, period),
+    () => historyAPIClient.getWorkerStatsHistory(userAddress, workerName, period),
     {
       revalidateOnFocus: false,
       refreshInterval: 60_000, // optionnel : refresh chaque minute

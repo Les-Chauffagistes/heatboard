@@ -47,6 +47,7 @@ avant toute modification.
 | `entity:workernames` | entity | `prisma/schema.prisma` | Table `workernames` (association) |
 | `ext:pool` | external | `API_URL` | API publique de la pool |
 | `ext:history` | external | `HISTORY_API_URL` | Serveur d'historique |
+| `ext:ckpool` | external | `CKPOOL_API_URL` | Distribution des parts par worker |
 | `ext:bitcoin` | external | `BITCOIN_API_URL` | Prix & récompense BTC |
 | `ext:auth` | external | `AUTH_API_URL` / `AUTH_URL` | Service d'authentification |
 
@@ -56,8 +57,8 @@ Format : `source --relation--> cible`.
 
 ### Pages → données
 - `home --appelle--> apiClient.addresssExists --proxy--> route:exists --fetch--> ext:pool`
-- `board/workers --appelle--> apiClient.{getPoolStats,getPoolWeight,getBtcPrice,getBtcBlockReward}`
-- `board/pool --appelle--> apiClient.{getPoolStats,getPoolHistory,getPoolWeight}`
+- `board/workers --appelle--> apiClient.{getPoolStats,getPoolShareRepartition,getBtcPrice,getBtcBlockReward}`
+- `board/pool --appelle--> apiClient.{getPoolStats,getPoolHistory,getPoolShareRepartition}`
 - `board/my --appelle--> apiClient.{getLinkedWorkers,patchUser}` + `useSession`
 - `start --appelle--> apiClient.{getLinkedWorkers,getUserToken,registerWorkername}` + `useSession`
 - `useWorkerStats --appelle--> apiClient.getWorkerStatsHistory --fetch--> ext:history`
@@ -66,7 +67,7 @@ Format : `source --relation--> cible`.
 - `apiClient.getPoolStats --fetch--> ext:pool` (`/api/stats/{address}`)
 - `apiClient.getWorkerStatsHistory --fetch--> ext:history` (`/v1/{addr}/worker/{name}/{period}`)
 - `apiClient.getPoolHistory --fetch--> ext:history` (`/v1/{addr}/pool`)
-- `apiClient.getPoolWeight --fetch--> ext:history` (`/v1/{addr}/weights`)
+- `apiClient.getPoolShareRepartition --fetch--> ext:ckpool` (`/v1/distribution/{addr}`)
 - `apiClient.getBtcPrice --fetch--> ext:bitcoin` (`/v1/bitcoin-price`)
 - `apiClient.getBtcBlockReward --fetch--> ext:bitcoin` (`/v1/bitcoin-block-reward`)
 - `apiClient.{addresssExists,getLinkedWorkers,registerWorkername,getUserToken,patchUser} --fetch--> route:*` (interne)

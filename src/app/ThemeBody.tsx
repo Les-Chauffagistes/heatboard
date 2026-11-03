@@ -15,7 +15,7 @@ export default function ThemeBody({ children, className }: Readonly<ThemeBodyPro
     <body 
       className={className} 
       style={{
-        backgroundColor: isDark ? "#1f1f1f" : "#ce8415ff"
+        backgroundColor: isDark ? "#1c1c22" : "#ce8415ff"
       }}
     >
       <MockingProvider>{children}</MockingProvider>
