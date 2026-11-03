@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-app:
-    uses: les-chauffagistes/deploy/.github/workflows/build.yml@6b7beb9ea8abcd41912b82018353bdc84ee2523d
+    uses: les-chauffagistes/deploy/.github/workflows/build.yml@be3b94140650519f067162409927358ea8b0723f
     with:
       service-name: heatboard
       build-target: runner
