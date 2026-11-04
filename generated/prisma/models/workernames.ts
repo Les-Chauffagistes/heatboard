@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/library"
+import type * as runtime from "@prisma/client/runtime/client"
 import type * as $Enums from "../enums"
 import type * as Prisma from "../internal/prismaNamespace"
 
@@ -165,7 +165,7 @@ export type WorkernamesGroupByOutputType = {
   _max: WorkernamesMaxAggregateOutputType | null
 }
 
-type GetWorkernamesGroupByPayload<T extends workernamesGroupByArgs> = Prisma.PrismaPromise<
+export type GetWorkernamesGroupByPayload<T extends workernamesGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<WorkernamesGroupByOutputType, T['by']> &
       {
@@ -993,6 +993,11 @@ export type workernamesFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Skip the first `n` workernames.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of workernames.
+   */
   distinct?: Prisma.WorkernamesScalarFieldEnum | Prisma.WorkernamesScalarFieldEnum[]
 }
 
