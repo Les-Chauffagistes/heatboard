@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/server/Prisma";
-import { userModel } from "../../../../generated/prisma/models/user";
+import * as z from "zod";
+import { getPayoutService } from "@/server/payout";
+import { handle } from "@/server/payout/http";
 import { getMe } from "@/lib/auth";
 import { getServerCookieHeader } from "@/lib/auth.server";
 import { logger } from "@/lib/logger";
@@ -23,20 +25,16 @@ export async function GET() {
     }
 }
 
+const PatchPayload = z.object({ address: z.string().min(1) });
+
+/** Seule l'adresse de paiement est modifiable ; la modifier la confirme (`confirmedAt` posé côté serveur). */
 export async function PATCH(req: Request) {
-    try {
-        const data: Partial<Omit<userModel, "id">> = await req.json();
+    return handle(async () => {
         const baseUser = await getMe(await getServerCookieHeader());
         if (!baseUser) return NextResponse.json({ error: "Auth required" }, { status: 401 });
 
-        await prisma.user.update({
-            where: { id: baseUser.user_id },
-            data,
-        });
-
+        const { address } = PatchPayload.parse(await req.json());
+        await getPayoutService().confirmAddress(baseUser.user_id, address);
         return NextResponse.json({ ok: true });
-    } catch (e) {
-        logger.error(e);
-        return NextResponse.json({ ok: false }, { status: 500 });
-    }
+    });
 }

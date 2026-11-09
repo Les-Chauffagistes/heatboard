@@ -51,9 +51,9 @@ Fichier : `src/app/api/user/route.ts`
 - Client : consommé par `useSession` (`src/app/hooks/useSession.ts`).
 
 ## `PATCH /api/user`
-Même fichier.
-- **Auth requise.** Met à jour les champs `user` (ex. `address`).
-- Client : `patchUser({ address })`.
+Auth requise. Corps `{ address }` uniquement (tout autre champ est rejeté ou ignoré). Enregistre l'adresse de
+paiement, la **confirme** (`confirmedAt` posé côté serveur) et la fige sur les paiements en attente. 422 si
+l'adresse Bitcoin mainnet est invalide.
 
 ## `GET /api/user/token`
 Fichier : `src/app/api/user/token/route.ts`
@@ -71,6 +71,35 @@ Fichier : `src/app/api/webhooks/link-workername/route.ts`
 - Erreurs : `400` (JSON/Zod invalide), réponse `Auth failed` si le bearer ne correspond pas.
 
 ---
+
+## Paiements des récompenses de block (pool communautaire)
+
+Logique métier dans `src/server/payout/` (`BlockPayoutService`), câblée par `getPayoutService()`.
+Un block est enregistré avec la répartition du travail à sa date de minage (history-server
+`GET /v1/{address}/distribution?at=`) et sa subsidy (bitcoin-service, hors frais). Une ligne `payment` par
+workername ; les workernames non liés (`workernames.status = "done"`) ou revendiqués par plusieurs comptes
+n'ont pas de `user` et ne sont jamais payés.
+
+### Membre (session requise)
+- `GET /api/payouts` → `{ requiredAction: "address_missing" | "address_confirmation_required" | null, payments }`
+  (paiements du membre uniquement, avec leur audit log `updates`).
+- `POST /api/payouts/address` → corps `{ address? }` : enregistre/reconfirme l'adresse (changer = confirmer) et la
+  fige sur tous ses paiements `waiting` (→ `pending`). Une adresse confirmée il y a ≤ 30 jours est figée d'office
+  à l'enregistrement du block.
+
+### Admin (`Authorization: Bearer <ADMIN_API_KEY>`, sinon 401)
+- `POST /api/admin/blocks` → `{ height, minedAt (ISO 8601 avec fuseau), rewardSatoshi? }`, en-tête optionnel
+  `Idempotency-Key` (uuid). 201 créé, 200 rejeu de la même clé, 409 hauteur déjà enregistrée, 502 si
+  history-server/bitcoin-service est indisponible (rien n'est enregistré).
+- `GET /api/admin/blocks`, `GET /api/admin/blocks/[height]` (avec paiements).
+- `DELETE /api/admin/blocks/[height]` → 204, ou 409 si le block a des paiements (pas de cascade).
+- `GET /api/admin/payments?block=&status=&user=`, `GET /api/admin/payments/[id]` (avec audit log).
+- `PATCH /api/admin/payments/[id]` → `{ status: waiting|pending|sent|cancelled, note?, txid? }`. Toute transition est
+  permise (retours en arrière inclus) et journalisée ; `sent` exige une adresse figée.
+
+### Tests
+`npm test` (unitaires), `npm run test:integration` (testcontainers, Docker requis), `npm run test:e2e`
+(Playwright ; Postgres jetable, history-server/bitcoin-service/auth mockés par `tests/e2e/stack.mjs`).
 
 ## Ajouter une route (checklist agent)
 1. Créer `src/app/api/<chemin>/route.ts` exportant `GET/POST/...`.
