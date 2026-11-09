@@ -48,3 +48,5 @@ nginx.conf
 
 # Generated at runtime by docker-entrypoint.sh
 public/config.js
+# prisma client (généré par `npm run db:generate`)
+/generated/prisma
