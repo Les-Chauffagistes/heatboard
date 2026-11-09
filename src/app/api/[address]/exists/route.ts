@@ -9,7 +9,7 @@ export const GET = async(_req: Request, { params }: { params: Promise<{ address:
   try {
     const p = await params;
 
-    const upstream = await fetch(`${env.apiUrl}/api/stats/${p.address}`, {
+    const upstream = await fetch(`${env.apiUrl}/v1/stats/${p.address}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
       signal: controller.signal,
@@ -18,6 +18,9 @@ export const GET = async(_req: Request, { params }: { params: Promise<{ address:
 
     if (upstream.status === 404) return NextResponse.json({ exists: false }, { status: 200 });
     else if (upstream.status === 200) return NextResponse.json({ exists: true }, { status: 200 });
+
+    logger.error(`exists: statut amont inattendu ${upstream.status}`);
+    return NextResponse.json({ error: "upstream_failed" }, { status: 502 });
   } catch (e) {
     logger.error(e);
     return NextResponse.json({ error: "upstream_failed" }, { status: 502 });
