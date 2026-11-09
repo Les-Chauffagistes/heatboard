@@ -7,6 +7,8 @@ DB_PASSWORD=$(cat /run/secrets/heatboard_db_password)
 export DATABASE_URL="postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}"
 export POOL_TOKEN=$(cat /run/secrets/heatboard_pool_token)
 export SESSION_PASSWORD=$(cat /run/secrets/heatboard_session_password)
+# Optionnel : sans clé, tous les endpoints /api/admin/* refusent les requêtes (401).
+[ -f /run/secrets/heatboard_admin_api_key ] && export ADMIN_API_KEY=$(cat /run/secrets/heatboard_admin_api_key)
 export DISCORD_CLIENT_SECRET=$(cat /run/secrets/heatboard_discord_client_secret)
 export NEXTAUTH_SECRET=$(cat /run/secrets/heatboard_nextauth_secret)
 
