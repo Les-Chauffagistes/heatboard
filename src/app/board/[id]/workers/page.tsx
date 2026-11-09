@@ -23,9 +23,9 @@ import ExtractWorkername from "@/lib/ExtractWorkername";
 import "./styles.css";
 
 import { HASHRATE_COLUMNS, COMMUNITY_POOL_ADDRESS, isValidHashrateColumn, type HashrateColumn } from "@/app/constants/columns";
-import {components, BitcoinAPIClient, PoolAPIClient} from "@chauffagistes/cmn";
+import {components} from "@chauffagistes/cmn";
+import { useBtcBlockReward, useBtcPrice, usePoolStats, usePoolWeights } from "@/app/hooks/usePoolData";
 import {CleanWorkerHashrate} from "../../../../../models/CleanWorkerHashrate";
-import {config} from "@/lib/config";
 
 
 const INITIAL_VISIBLE_COLUMNS = new Set(HASHRATE_COLUMNS);
@@ -33,19 +33,23 @@ const INITIAL_VISIBLE_COLUMNS = new Set(HASHRATE_COLUMNS);
 type VisibleColumns = HashrateColumn;
 
 export default function Home() {
-    const [userStats, setUserStats] = useState<components["schemas"]["PoolStats"] | null>(null);
-    const [weights, setWeights] = useState<components["schemas"]["PoolDistributionElement"][]>([]);
     const [visibleColumns, setVisibleColumns] = useState<Set<VisibleColumns>>(new Set(INITIAL_VISIBLE_COLUMNS));
-    const [bitcoinPrice, setBitcoinPrice] = useState<number | null>(null);
-    const [bitcoinBlockReward, setBitcoinBlockReward] = useState<number | null>(null);
     const [orderBy, setOrderBy] = useState<keyof CleanWorkerHashrate>("weight");
     const [searchText, setSearchText] = useState("");
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
 
     const pathname = usePathname();
     const userAddress = pathname?.split("/")[2];
     const isCommunityPool = userAddress === COMMUNITY_POOL_ADDRESS;
+
+    // Les données essentielles bloquent le rendu ; prix BTC et récompense de bloc ne
+    // peuplent qu'une colonne, leur échec ne doit pas empêcher l'affichage du reste.
+    const { data: userStats, error: statsError, isLoading: statsLoading } = usePoolStats(userAddress);
+    const { data: weightsData, error: weightsError, isLoading: weightsLoading } = usePoolWeights(userAddress);
+    const weights = weightsData ?? [];
+    const isLoading = statsLoading || weightsLoading;
+    const error = statsError ?? weightsError;
+    const bitcoinPrice = useBtcPrice().data?.EUR ?? null;
+    const bitcoinBlockReward = useBtcBlockReward().data ?? null;
 
     const { isDark } = useTheme();
     const theme = useMemo(() => createTheme({ palette: { mode: isDark ? "dark" : "light" } }), [isDark]);
@@ -71,56 +75,6 @@ export default function Home() {
         }
     }, []);
 
-    useEffect(() => {
-        if (!userAddress) return;
-
-        const abortController = new AbortController();
-        setIsLoading(true);
-        setError(null);
-
-        const fetchData = async () => {
-            // Données essentielles : leur échec bloque le rendu de la page.
-            const poolAPIClient = new PoolAPIClient(config.API_URL);
-            const bitcoinAPIClient = new BitcoinAPIClient(config.BITCOIN_API_URL);
-            try {
-                const [stats, weights] = await Promise.all([
-                    poolAPIClient.getPoolStats(userAddress),
-                    poolAPIClient.getPoolShareDistribution(userAddress),
-                ]);
-
-                if (abortController.signal.aborted) return;
-
-                setUserStats(stats);
-                setWeights(weights);
-                setIsLoading(false);
-            } catch (err) {
-                if (!abortController.signal.aborted) {
-                    setError(err instanceof Error ? err.message : "Erreur lors du chargement des données");
-                    setIsLoading(false);
-                }
-                return;
-            }
-
-            // Données secondaires (prix BTC, récompense de bloc) : elles ne peuplent
-            // qu'une colonne du tableau, leur échec ne doit pas empêcher l'affichage du reste.
-            bitcoinAPIClient.getBtcPrice()
-                .then((price) => {
-                    if (!abortController.signal.aborted) setBitcoinPrice(price.EUR);
-                })
-                .catch(() => {});
-
-            bitcoinAPIClient.getBtcBlockReward()
-                .then((blockReward) => {
-                    if (!abortController.signal.aborted) setBitcoinBlockReward(blockReward);
-                })
-                .catch(() => {});
-        };
-
-        fetchData();
-
-        return () => abortController.abort();
-    }, [userAddress]);
-
     const isLargeScreen = useMediaQuery("(min-width: 800px)");
 
     const pageScrollRef = useHideOnScroll(setMobileNavScrolledDown);
@@ -135,14 +89,15 @@ export default function Home() {
     }
 
     if (error) {
-        return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Erreur: {error}</div>;
+        return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Erreur: {error instanceof Error ? error.message : "Erreur lors du chargement des données"}</div>;
     }
 
     if (!userStats || !weights.length) {
         return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Aucune donnée</div>;
     }
 
-    const payload = { ...userStats.workers } as (components["schemas"]["Worker"] & { weight: number })[];
+    // Copie des workers : les objets en cache SWR sont partagés avec les autres pages.
+    const payload = Object.values(userStats.workers).map(w => ({ ...w })) as (components["schemas"]["Worker"] & { weight: number })[];
 
     for (const [, worker] of Object.entries(payload)) {
         // L'API de distribution renvoie le workername complet ("adresse.nom"), comme les stats.
@@ -232,7 +187,11 @@ export default function Home() {
                 base.rewardBtc = bitcoinBlockReward * (base.weight / 100);
             }
             return base
-        }).filter(worker => !!ExtractWorkername.fromPool(worker.workername)); // To test
+        }).filter(worker => !!ExtractWorkername.fromPool(worker.workername)) // To test
+          // L'API ne garantit pas l'ordre de la liste : sans ordre de base déterministe, les lignes
+          // se réorganisent à chaque revalidation SWR. Les tris (grille, WorkerList) sont stables et
+          // départagent leurs égalités selon cet ordre alphabétique.
+          .sort((a, b) => a.workername.localeCompare(b.workername));
     }
 
     const data = normalizeHashrate(payload);

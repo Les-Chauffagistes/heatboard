@@ -1,7 +1,19 @@
+import { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 
 
-export default function Popup({ children, title, setOpen, open, handler = () => {} }: Readonly<{ title: string, children: React.ReactNode, open: boolean, setOpen: (open: boolean) => void, handler?: () => void }>) {
+/** `handler` peut être asynchrone ; la popup ne se ferme que s'il ne renvoie pas `false`. `error` s'affiche au-dessus du bouton. */
+export default function Popup({ children, title, setOpen, open, handler = () => {}, error = null, maxWidth = 400 }: Readonly<{ title: string, children: React.ReactNode, open: boolean, setOpen: (open: boolean) => void, handler?: () => void | boolean | Promise<void | boolean>, error?: string | null, maxWidth?: number }>) {
+    const [pending, setPending] = useState(false);
+
+    async function submit() {
+        setPending(true);
+        try {
+            if (await handler() !== false) setOpen(false);
+        } finally {
+            setPending(false);
+        }
+    }
 
     return (
         <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -24,7 +36,7 @@ export default function Popup({ children, title, setOpen, open, handler = () => 
                 zIndex: 101,
                 width: "80%",
                 height: "80%",
-                maxWidth: 400,
+                maxWidth,
                 maxHeight: 300,
                 marginTop: 30,
                 display: "flex",
@@ -32,10 +44,11 @@ export default function Popup({ children, title, setOpen, open, handler = () => 
             }}>
                 <Dialog.Title style={{ textAlign: "center", marginBottom: "2rem" }}>{title}</Dialog.Title>
                 {children}
+                {error && <p role="alert" style={{ color: "var(--error-color, #d33)", margin: "0.5rem 0 0" }}>{error}</p>}
                 <div style={{
                     margin: "auto 0px 0px auto",
                 }}>
-                    <Dialog.Close onClick={handler} className="primary">OK</Dialog.Close>
+                    <button onClick={submit} disabled={pending} className="primary">OK</button>
                 </div>
 
             </Dialog.Content>

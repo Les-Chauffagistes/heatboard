@@ -63,28 +63,26 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = [
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    name: "Heatboard",
-    url: "https://heatboard.chauffagistes-btc.fr",
-    description:
-      "Dashboard public des pools de minage Bitcoin Chauffagistes : hashrate des workers en temps réel, statistiques de pool, récompenses estimées.",
-    applicationCategory: "UtilitiesApplication",
-    operatingSystem: "Any (Web)",
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "EUR",
-    },
-    provider: {
-      "@type": "Organization",
-      name: "Les Chauffagistes",
-      url: "https://chauffagistes-btc.fr",
-    },
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Heatboard",
+  url: "https://heatboard.chauffagistes-btc.fr",
+  description:
+    "Dashboard public des pools de minage Bitcoin Chauffagistes : hashrate des workers en temps réel, statistiques de pool, récompenses estimées.",
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Any (Web)",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "EUR",
   },
-];
+  provider: {
+    "@type": "Organization",
+    name: "Les Chauffagistes",
+    url: "https://chauffagistes-btc.fr",
+  },
+};
 
 export default function RootLayout({
   children,
