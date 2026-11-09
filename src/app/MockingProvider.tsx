@@ -22,6 +22,18 @@ import { useEffect, useState } from "react";
  */
 const MOCKING_ENABLED = process.env.NEXT_PUBLIC_MOCK_API === "1";
 
+// Promesse partagée : React Strict Mode (dev) exécute les effets deux fois, et MSW 2.x
+// lève une erreur si `worker.start()` est appelé sur un worker déjà activé.
+let workerStarted: Promise<void> | null = null;
+
+function startWorker(): Promise<void> {
+  workerStarted ??= (async () => {
+    const { worker } = await import("../../mocks/browser");
+    await worker.start({ onUnhandledRequest: "bypass" });
+  })();
+  return workerStarted;
+}
+
 export default function MockingProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const [ready, setReady] = useState(!MOCKING_ENABLED);
 
@@ -29,8 +41,7 @@ export default function MockingProvider({ children }: Readonly<{ children: React
     if (!MOCKING_ENABLED) return;
 
     let active = true;
-    import("../../mocks/browser").then(async ({ worker }) => {
-      await worker.start({ onUnhandledRequest: "bypass" });
+    void startWorker().then(() => {
       if (active) setReady(true);
     });
 
