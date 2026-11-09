@@ -50,3 +50,9 @@ nginx.conf
 public/config.js
 # prisma client (généré par `npm run db:generate`)
 /generated/prisma
+
+# e2e
+/tests/e2e/.state.json
+/test-results/
+/playwright-report/
+/.next-e2e/
