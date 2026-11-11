@@ -94,6 +94,7 @@ export default function RootLayout({
       <head>
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script src="/config.js" />
+        <script defer src="https://umami.chauffagistes-btc.fr/script.js" data-website-id="30920b2f-458d-4e41-b89b-4a30e71d7e14"></script>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png"></link>
