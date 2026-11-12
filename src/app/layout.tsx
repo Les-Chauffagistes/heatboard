@@ -63,28 +63,26 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = [
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    name: "Heatboard",
-    url: "https://heatboard.chauffagistes-btc.fr",
-    description:
-      "Dashboard public des pools de minage Bitcoin Chauffagistes : hashrate des workers en temps réel, statistiques de pool, récompenses estimées.",
-    applicationCategory: "UtilitiesApplication",
-    operatingSystem: "Any (Web)",
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "EUR",
-    },
-    provider: {
-      "@type": "Organization",
-      name: "Les Chauffagistes",
-      url: "https://chauffagistes-btc.fr",
-    },
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Heatboard",
+  url: "https://heatboard.chauffagistes-btc.fr",
+  description:
+    "Dashboard public des pools de minage Bitcoin Chauffagistes : hashrate des workers en temps réel, statistiques de pool, récompenses estimées.",
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Any (Web)",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "EUR",
   },
-];
+  provider: {
+    "@type": "Organization",
+    name: "Les Chauffagistes",
+    url: "https://chauffagistes-btc.fr",
+  },
+};
 
 export default function RootLayout({
   children,
@@ -96,6 +94,7 @@ export default function RootLayout({
       <head>
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script src="/config.js" />
+        <script defer src="https://umami.chauffagistes-btc.fr/script.js" data-website-id="30920b2f-458d-4e41-b89b-4a30e71d7e14"></script>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png"></link>

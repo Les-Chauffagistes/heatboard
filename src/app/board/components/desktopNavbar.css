@@ -1,19 +1,52 @@
+#desktop-navbar {
+    display: flex;
+}
+
+.des-nav-tabs {
+    position: relative;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 #desktop-navbar a div {
+    position: relative;    /* au-dessus de la pastille */
+    z-index: 1;
     line-height: 1;        /* élimine les variations verticales */
     font-weight: 600;      /* poids constant */
     display: flex;
     align-items: center;   /* encore plus de stabilité verticale */
     padding: 5px 10px;
     border-radius: 7px;
+    transition: color 0.25s ease;
+}
+
+/* Pastille unique qui glisse d'un onglet à l'autre */
+.des-nav-indicator {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 7px;
+    background-color: var(--desktop-navbar-active-color);
+    opacity: 0;            /* masquée tant que l'onglet actif n'est pas mesuré */
+    pointer-events: none;
+    transition: transform 0.25s ease, width 0.25s ease;
 }
 
 .des-nav-active {
-    background-color: var(--desktop-navbar-active-color);
     color: var(--desktop-navbar-active-text-color);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .des-nav-indicator,
+    #desktop-navbar a div {
+        transition: none;
+    }
 }
 
 @media screen and (max-width: 800px) {
     #desktop-navbar {
-        display: none !important;
+        display: none;
     }
 }

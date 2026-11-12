@@ -1,19 +1,77 @@
 generator client {
-  provider      = "prisma-client"
-  output        = "../generated/prisma"
-  binaryTargets = ["native", "darwin"]
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model user {
-  id      String
-  address String?
+  id          String
+  address     String?
+  confirmedAt DateTime? @db.Timestamptz(3)
 
   @@id(id)
+}
+
+model block {
+  height         Int
+  minedAt        DateTime @db.Timestamptz(3)
+  rewardSatoshi  BigInt
+  idempotencyKey String   @unique @db.Uuid
+  created_at     DateTime @default(now()) @db.Timestamptz(3)
+
+  payments payment[]
+
+  @@id([height])
+}
+
+enum PaymentStatus {
+  waiting
+  pending
+  sent
+  cancelled
+}
+
+/// Une ligne par (block, workername). `user` est null si le workername n'était pas lié à un compte
+/// au moment de l'enregistrement du block ; ces lignes ne sont jamais payées.
+model payment {
+  id              String        @default(uuid()) @db.Uuid
+  block           Int
+  workername      String
+  part            Decimal
+  amountSatoshi   BigInt
+  user            String?
+  btc_address     String?
+  addressFrozenAt DateTime?     @db.Timestamptz(3)
+  status          PaymentStatus @default(waiting)
+  txid            String?
+  created_at      DateTime      @default(now()) @db.Timestamptz(3)
+
+  blockRef block           @relation(fields: [block], references: [height], onDelete: Restrict)
+  updates  paymentUpdate[]
+
+  @@id([id])
+  @@unique([block, workername])
+  @@index([user])
+}
+
+/// Audit log append-only des changements de statut d'un paiement.
+model paymentUpdate {
+  id         String         @default(uuid()) @db.Uuid
+  payment_id String         @db.Uuid
+  fromStatus PaymentStatus?
+  toStatus   PaymentStatus
+  actor      String
+  note       String?
+  txid       String?
+  created_at DateTime       @default(now()) @db.Timestamptz(3)
+
+  payment payment @relation(fields: [payment_id], references: [id], onDelete: Restrict)
+
+  @@id([id])
+  @@index([payment_id, created_at])
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments

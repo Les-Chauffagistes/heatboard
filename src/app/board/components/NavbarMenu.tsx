@@ -1,12 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Check, LogOut, Menu, Moon, MonitorSmartphone, Sun, CircleUser } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Bitcoin, Check, LogOut, Menu, Moon, MonitorSmartphone, Sun, CircleUser } from "lucide-react";
 import { useSession } from "@/app/hooks/useSession";
 import { useTheme, ThemePreference } from "@/app/hooks/useTheme";
 import { logOut } from "@/lib/auth";
 import "./navbarMenu.css";
+import "./payouts.css";
 import { config } from "@/lib/config";
+import { COMMUNITY_POOL_ADDRESS } from "@/app/constants/columns";
+import { usePayouts } from "@/app/hooks/usePayouts";
 
 const THEME_OPTIONS: { value: ThemePreference; label: string; icon: React.ReactNode }[] = [
     { value: "light", label: "Clair", icon: <Sun size={16} /> },
@@ -27,6 +32,9 @@ export default function NavbarMenu({ variant = "inline" }: Readonly<{ variant?: 
     const { user } = useSession();
     const { theme, setTheme } = useTheme();
     const [open, setOpen] = useState(false);
+    const isCommunityPool = usePathname()?.split("/")[2] === COMMUNITY_POOL_ADDRESS;
+    const { payouts } = usePayouts(!!user && isCommunityPool);
+    const needsAttention = !!payouts?.requiredAction;
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -57,9 +65,10 @@ export default function NavbarMenu({ variant = "inline" }: Readonly<{ variant?: 
                 onClick={() => setOpen((prev) => !prev)}
                 aria-haspopup="true"
                 aria-expanded={open}
-                aria-label="Ouvrir le menu"
+                aria-label={needsAttention ? "Ouvrir le menu (action requise)" : "Ouvrir le menu"}
             >
                 <Menu size={20} />
+                {needsAttention && <span className="navbar-menu-dot" data-testid="payouts-attention-dot" />}
             </button>
 
             {open && (
@@ -85,6 +94,28 @@ export default function NavbarMenu({ variant = "inline" }: Readonly<{ variant?: 
                             })}
                         </div>
                     </div>
+
+                    {user && isCommunityPool && (
+                        <>
+                            <div className="navbar-menu-divider" />
+                            <div className="navbar-menu-section">
+                                <div className="navbar-menu-section-label">Récompenses</div>
+                                <div className="navbar-menu-group">
+                                    <Link
+                                        href={`/board/${COMMUNITY_POOL_ADDRESS}/payouts`}
+                                        className="navbar-menu-item"
+                                        onClick={() => setOpen(false)}
+                                    >
+                                        <span className="navbar-menu-item-icon">
+                                            <Bitcoin size={16} />
+                                        </span>
+                                        <span className="navbar-menu-item-label">Mes paiements de blocks</span>
+                                        {needsAttention && <span className="navbar-menu-item-dot" aria-hidden="true" />}
+                                    </Link>
+                                </div>
+                            </div>
+                        </>
+                    )}
 
                     {user && (
                         <>

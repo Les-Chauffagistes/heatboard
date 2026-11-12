@@ -11,7 +11,7 @@ Conventions observées dans le code. À respecter pour rester cohérent.
   soit via chemins relatifs, soit via `@/../models/...`.
 - **Client Prisma unique** : toujours `import { prisma } from "@/server/Prisma"`. Ne pas
   instancier de nouveau `PrismaClient`. Le client généré est dans `generated/prisma/`
-  (committé, régénéré par `prisma generate`).
+  (**non versionné**, régénéré par `npm run db:generate` ; le Dockerfile le fait au build).
 - Accès BDD via **Prisma**, pas via le `pg` brut de `src/server/Postrgre.ts` (legacy).
 
 ## Routes API (App Router)

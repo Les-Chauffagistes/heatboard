@@ -7,3 +7,15 @@
         flex-direction: column;
     }
 }
+#workers-grid {
+    animation: workers-grid-fade-in 0.35s ease-out;
+}
+
+@keyframes workers-grid-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #workers-grid { animation: none; }
+}

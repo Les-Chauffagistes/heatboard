@@ -1,12 +1,12 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
 import { CircleStar, Flame, SatelliteDish } from "lucide-react";
 import { useTheme } from "@/app/hooks/useTheme";
-import { components, HistoryAPIClient, PoolAPIClient } from "@chauffagistes/cmn"
+import { usePoolHistory, usePoolStats, usePoolWeights } from "@/app/hooks/usePoolData";
 
 import HashrateChart from "./components/HashrateChart";
 import CombinedWidgetCard from "./components/CombinedWidgetCard";
@@ -20,7 +20,6 @@ import UnitConverter from "../../../../lib/UnitConverter";
 import "./styles.css";
 
 import { COMMUNITY_POOL_ADDRESS } from "@/app/constants/columns";
-import {config} from "@/lib/config";
 
 export default function Welcome() {
     const path = usePathname();
@@ -29,49 +28,14 @@ export default function Welcome() {
     const { isDark } = useTheme();
     const theme = useMemo(() => createTheme({ palette: { mode: isDark ? "dark" : "light" } }), [isDark]);
 
-    const [poolStatsHistory, setPoolStatsHistory] = useState<components["schemas"]["PoolStatsHistory"][] | null>(null);
-    const [poolStats, setPoolStats] = useState<components["schemas"]["PoolStats"] | null>(null);
-    const [weights, setWeights] = useState<components["schemas"]["PoolDistributionElement"][]>([]);
+    const { data: poolStatsHistory } = usePoolHistory(userAddress);
+    const { data: poolStats } = usePoolStats(userAddress);
+    const { data: weights = [] } = usePoolWeights(userAddress);
 
     const isLargeScreen = useMediaQuery("(min-width: 800px)");
     const isCommunityPool = userAddress === COMMUNITY_POOL_ADDRESS;
 
-    const poolAPIClient = new PoolAPIClient(config.API_URL)
-
-
-    useEffect(() => {
-        if (!userAddress) return;
-
-        const abortController = new AbortController();
-
-        const fetchData = async () => {
-            try {
-                const historyAPIClient = new HistoryAPIClient(config.HISTORY_API_URL)
-                const poolAPIClient = new PoolAPIClient(config.API_URL)
-                const [history, weights, stats] = await Promise.all([
-                    historyAPIClient.getPoolStatsHistory(userAddress),
-                    poolAPIClient.getPoolShareDistribution(userAddress),
-                    poolAPIClient.getPoolStats(userAddress),
-                ]);
-
-                if (abortController.signal.aborted) return;
-
-                setPoolStatsHistory(history);
-                setWeights(weights);
-                setPoolStats(stats);
-            } catch (err) {
-                if (!abortController.signal.aborted) {
-                    console.error("Erreur lors du chargement des données de pool:", err);
-                }
-            }
-        };
-
-        fetchData();
-
-        return () => abortController.abort();
-    }, [poolAPIClient, userAddress]);
-
-    if (poolStatsHistory === null || poolStats === null || weights === null) {
+    if (!poolStatsHistory || !poolStats) {
         return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Préchauffage...</div>;
     }
 
